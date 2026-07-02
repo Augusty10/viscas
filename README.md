@@ -28,4 +28,4 @@ Users can:
 - Summarize emails
 - Schedule meetings
 - Manage subscriptions
-- Search intelligently
+- Search intelligently 
