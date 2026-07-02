@@ -8,7 +8,7 @@ export default function Section({
   className = "",
 }: SectionProps) {
   return (
-    <section className={`py-20 ${className}`}>
+    <section className={`min-h-[calc(100vh-72px)] flex items-center ${className}`}>
       {children}
     </section>
   );

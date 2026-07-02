@@ -12,7 +12,7 @@ export default function Heading({
   return (
     <div className={align === "center" ? "text-center" : "text-left"}>
       <h2
-        className="text-5xl font-bold tracking-tight"
+        className="text-5xl font-bold leading-[1.1] lg:text-6x1"
         style={{ fontFamily: "var(--font-heading)" }}
       >
         {title}
