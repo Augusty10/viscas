@@ -1,4 +1,8 @@
-export default function Logo() {
+type LogoProps = {
+  showText?: boolean;
+};
+
+export default function Logo({ showText = true }: LogoProps) {
   return (
     <div className="flex items-center gap-3">
       <img
@@ -7,14 +11,16 @@ export default function Logo() {
         className="h-10 w-10"
       />
 
-      <span
-        className="font-bold text-2xl"
-        style={{
-          fontFamily: "var(--font-heading)",
-        }}
-      >
-        Viscas
-      </span>
+      {showText && (
+        <span
+          className="text-2xl font-bold"
+          style={{
+            fontFamily: "var(--font-heading)",
+          }}
+        >
+          Viscas
+        </span>
+      )}
     </div>
   );
 }
