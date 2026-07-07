@@ -1,5 +1,6 @@
 "use client";
 
+import SearchBar from "./SearchBar";
 import { Bell, Search } from "lucide-react";
 
 export default function Topbar() {
