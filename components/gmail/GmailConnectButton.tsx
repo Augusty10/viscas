@@ -27,6 +27,11 @@ export default function GmailConnectButton({
     ].join(" "),
 
     onSuccess: async (tokenResponse) => {
+     
+    localStorage.setItem(
+    "google_access_token",
+    tokenResponse.access_token
+  );
       try {
         const inbox = await getInbox(tokenResponse.access_token);
 
