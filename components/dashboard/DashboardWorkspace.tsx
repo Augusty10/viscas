@@ -71,10 +71,12 @@ export default function DashboardWorkspace() {
       </section>
 
       <section className="grid grid-cols-1 gap-8 xl:grid-cols-2">
-        <AIAssistant
-          unreadEmails={unreadCount}
-          meetings={meetingsCount}
-        />
+    
+       
+       <AIAssistant
+    emails={recentEmails}
+    events={todayEvents}
+  />/
 
         <QuickActions />
       </section>

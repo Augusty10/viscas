@@ -1,5 +1,5 @@
 "use client";
-
+import AISummary from "./AISummary";
 import {
   Archive,
   Reply,
@@ -75,6 +75,12 @@ export default function EmailPreview({
           {email.body}
         </div>
       </div>
+
+      <div className="mt-8">
+  <AISummary
+    email={email.body || email.snippet}
+  />
+</div>
 
       {/* Footer */}
       <div className="flex items-center justify-between border-t border-slate-200 p-5">

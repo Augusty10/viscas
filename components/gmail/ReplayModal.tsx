@@ -1,119 +1,191 @@
 "use client";
 
 import { useState } from "react";
-import { X, Send } from "lucide-react";
+
+import {
+  Sparkles,
+  Send,
+  Copy,
+  Loader2,
+  X,
+} from "lucide-react";
 
 type ReplyModalProps = {
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
-  to: string;
-  subject: string;
-  onSend: (message: string) => Promise<void>;
+  email: string;
+  accessToken: string;
+  messageId: string;
+  onSend: (
+    accessToken: string,
+    messageId: string,
+    body: string
+  ) => Promise<void>;
 };
 
 export default function ReplyModal({
-  isOpen,
+  open,
   onClose,
-  to,
-  subject,
+  email,
+  accessToken,
+  messageId,
   onSend,
 }: ReplyModalProps) {
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [reply, setReply] = useState("");
 
-  if (!isOpen) return null;
+  const [loadingAI, setLoadingAI] =
+    useState(false);
 
-  async function handleSend() {
-    if (!message.trim()) return;
+  const [sending, setSending] =
+    useState(false);
 
-    setLoading(true);
+  if (!open) return null;
 
+  async function generateAIReply() {
     try {
-      await onSend(message);
-      setMessage("");
-      onClose();
+      setLoadingAI(true);
+
+      const response = await fetch(
+        "/api/ai/reply",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            email,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            "Failed to generate reply."
+        );
+      }
+
+      setReply(data.reply);
     } catch (error) {
       console.error(error);
+
+      alert("AI reply generation failed.");
     } finally {
-      setLoading(false);
+      setLoadingAI(false);
     }
   }
 
+  async function send() {
+    try {
+      setSending(true);
+
+      await onSend(
+        accessToken,
+        messageId,
+        reply
+      );
+
+      onClose();
+    } catch (error) {
+      console.error(error);
+
+      alert("Failed to send email.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function copyReply() {
+    await navigator.clipboard.writeText(
+      reply
+    );
+
+    alert("Copied!");
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-2xl rounded-3xl bg-white shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="w-full max-w-3xl rounded-3xl bg-white shadow-2xl">
         {/* Header */}
+
         <div className="flex items-center justify-between border-b p-6">
-          <div>
-            <h2 className="text-xl font-bold">Reply Email</h2>
-            <p className="text-sm text-slate-500">
-              Send reply using Gmail
-            </p>
-          </div>
+          <h2 className="text-2xl font-bold">
+            Reply Email
+          </h2>
 
           <button onClick={onClose}>
-            <X className="h-5 w-5" />
+            <X />
           </button>
         </div>
 
-        {/* Form */}
+        {/* Body */}
+
         <div className="space-y-5 p-6">
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              To
-            </label>
+          <textarea
+            value={reply}
+            onChange={(e) =>
+              setReply(e.target.value)
+            }
+            rows={12}
+            className="w-full rounded-2xl border p-4 outline-none focus:border-sky-500"
+            placeholder="Write your reply..."
+          />
 
-            <input
-              value={to}
-              readOnly
-              className="w-full rounded-xl border p-3 bg-slate-100"
-            />
-          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={generateAIReply}
+              disabled={loadingAI}
+              className="flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-white hover:bg-violet-700 disabled:opacity-60"
+            >
+              {loadingAI ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Sparkles className="h-4 w-4" />
+              )}
 
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Subject
-            </label>
+              Generate AI Reply
+            </button>
 
-            <input
-              value={`Re: ${subject}`}
-              readOnly
-              className="w-full rounded-xl border p-3 bg-slate-100"
-            />
-          </div>
+            <button
+              onClick={copyReply}
+              className="flex items-center gap-2 rounded-xl border px-5 py-3 hover:bg-slate-100"
+            >
+              <Copy className="h-4 w-4" />
 
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Message
-            </label>
-
-            <textarea
-              rows={10}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Write your reply..."
-              className="w-full rounded-xl border p-4 outline-none focus:border-sky-500"
-            />
+              Copy
+            </button>
           </div>
         </div>
 
         {/* Footer */}
+
         <div className="flex justify-end gap-3 border-t p-6">
           <button
             onClick={onClose}
-            className="rounded-xl border px-5 py-2"
+            className="rounded-xl border px-5 py-3"
           >
             Cancel
           </button>
 
           <button
-            onClick={handleSend}
-            disabled={loading}
-            className="flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-2 text-white hover:bg-sky-700 disabled:opacity-50"
+            onClick={send}
+            disabled={
+              sending || reply.trim() === ""
+            }
+            className="flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-3 text-white hover:bg-sky-700 disabled:opacity-60"
           >
-            <Send className="h-4 w-4" />
+            {sending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
 
-            {loading ? "Sending..." : "Send Reply"}
+            Send Reply
           </button>
         </div>
       </div>
