@@ -126,3 +126,65 @@ export async function searchEmails(
 
   return response.json();
 }
+// ================================
+// Dashboard APIs
+// ================================
+
+export async function getUnreadEmailCount(
+  accessToken: string
+) {
+  const response = await fetch(
+    "https://gmail.googleapis.com/gmail/v1/users/me/messages?q=is:unread",
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch unread emails");
+  }
+
+  const data = await response.json();
+
+  return data.resultSizeEstimate ?? 0;
+}
+
+export async function getStarredEmails(
+  accessToken: string
+) {
+  const response = await fetch(
+    "https://gmail.googleapis.com/gmail/v1/users/me/messages?q=is:starred&maxResults=10",
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch starred emails");
+  }
+
+  return response.json();
+}
+
+export async function getImportantEmails(
+  accessToken: string
+) {
+  const response = await fetch(
+    "https://gmail.googleapis.com/gmail/v1/users/me/messages?q=is:important&maxResults=10",
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch important emails");
+  }
+
+  return response.json();
+}

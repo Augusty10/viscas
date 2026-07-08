@@ -1,100 +1,132 @@
-import {
-  ArrowRight,
-  AlertCircle,
-  Clock,
-  Mail,
-} from "lucide-react";
+"use client";
 
-const emails = [
-  {
-    sender: "Google",
-    subject: "Interview Invitation",
-    priority: "High",
-    time: "2 min ago",
-  },
-  {
-    sender: "College",
-    subject: "Project Review Meeting",
-    priority: "Medium",
-    time: "18 min ago",
-  },
-  {
-    sender: "GitHub",
-    subject: "Repository Activity",
-    priority: "Low",
-    time: "1 hour ago",
-  },
-];
+import { useEffect, useState } from "react";
+import { Star, Mail, ArrowRight } from "lucide-react";
+import Link from "next/link";
+
+import {
+  getImportantEmails,
+  getEmail,
+  parseEmail,
+} from "@/lib/gmail";
+
+type Email = {
+  id: string;
+  sender: string;
+  subject: string;
+  snippet: string;
+  body: string;
+  date: string;
+};
 
 export default function PriorityInbox() {
+  const [emails, setEmails] = useState<Email[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadPriorityEmails() {
+      try {
+        const token = localStorage.getItem("google_access_token");
+
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const result = await getImportantEmails(token);
+
+        if (!result.messages) {
+          setLoading(false);
+          return;
+        }
+
+        const fetched = await Promise.all(
+          result.messages.slice(0, 5).map((message: any) =>
+            getEmail(token, message.id)
+          )
+        );
+
+        setEmails(fetched.map(parseEmail));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadPriorityEmails();
+  }, []);
+
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100">
-            <Mail className="h-6 w-6 text-sky-600" />
-          </div>
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">
+            Priority Inbox
+          </h2>
 
-          <div>
-            <h2 className="text-xl font-semibold">
-              Priority Inbox
-            </h2>
-
-            <p className="text-sm text-slate-500">
-              Emails that need your attention
-            </p>
-          </div>
+          <p className="text-sm text-slate-500">
+            Important Gmail messages
+          </p>
         </div>
 
-        <button className="text-sm font-medium text-sky-600 hover:underline">
+        <Link
+          href="/dashboard/gmail"
+          className="flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-700"
+        >
           View All
-        </button>
+          <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
 
-      {/* Email List */}
-      <div className="mt-6 space-y-4">
-        {emails.map((email) => (
-          <div
-            key={email.subject}
-            className="rounded-2xl border border-slate-200 p-4 transition hover:border-sky-300 hover:bg-slate-50"
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="font-semibold">
-                  {email.sender}
-                </h3>
+      {loading ? (
+        <div className="py-10 text-center text-slate-500">
+          Loading emails...
+        </div>
+      ) : emails.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-slate-300 p-8 text-center">
+          <Mail className="mx-auto mb-3 h-10 w-10 text-slate-400" />
 
-                <p className="mt-1 text-sm text-slate-600">
-                  {email.subject}
-                </p>
+          <p className="font-medium">
+            No important emails
+          </p>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Your important Gmail messages will appear here.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {emails.map((email) => (
+            <div
+              key={email.id}
+              className="rounded-2xl border border-slate-200 p-4 transition hover:border-sky-300 hover:bg-sky-50"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="font-semibold">
+                    {email.sender}
+                  </p>
+
+                  <p className="mt-1 font-medium text-slate-700">
+                    {email.subject || "(No Subject)"}
+                  </p>
+
+                  <p className="mt-2 line-clamp-2 text-sm text-slate-500">
+                    {email.snippet}
+                  </p>
+
+                  <p className="mt-3 text-xs text-slate-400">
+                    {new Date(email.date).toLocaleString()}
+                  </p>
+                </div>
+
+                <Star className="ml-4 h-5 w-5 fill-yellow-400 text-yellow-400" />
               </div>
-
-              <ArrowRight className="h-5 w-5 text-slate-400" />
             </div>
-
-            <div className="mt-4 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-slate-500">
-                <Clock className="h-4 w-4" />
-                {email.time}
-              </div>
-
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-medium ${
-                  email.priority === "High"
-                    ? "bg-red-100 text-red-600"
-                    : email.priority === "Medium"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-green-100 text-green-700"
-                }`}
-              >
-                <AlertCircle className="mr-1 inline h-3 w-3" />
-                {email.priority}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }

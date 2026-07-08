@@ -1,15 +1,26 @@
+"use client";
+
 import { CalendarDays, Sparkles } from "lucide-react";
 
-export default function Welcome() {
+type WelcomeProps = {
+  name?: string;
+  unreadEmails: number;
+  meetings: number;
+};
+
+export default function Welcome({
+  name = "Dhanraj",
+  unreadEmails,
+  meetings,
+}: WelcomeProps) {
   const currentHour = new Date().getHours();
 
-  let greeting = "Good Evening";
-
-  if (currentHour < 12) {
-    greeting = "Good Morning";
-  } else if (currentHour < 18) {
-    greeting = "Good Afternoon";
-  }
+  const greeting =
+    currentHour < 12
+      ? "Good Morning"
+      : currentHour < 18
+      ? "Good Afternoon"
+      : "Good Evening";
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-gradient-to-r from-sky-500 to-cyan-500 p-8 text-white shadow-lg">
@@ -21,13 +32,24 @@ export default function Welcome() {
           </p>
 
           <h1 className="mt-3 text-4xl font-bold">
-            {greeting}, Dhanraj 👋
+            {greeting}, {name} 👋
           </h1>
 
           <p className="mt-4 max-w-2xl text-sky-100">
-            Welcome back to <span className="font-semibold">Viscas</span>.
-            Here's a quick overview of your emails, calendar, and AI insights
-            for today.
+            Welcome back to{" "}
+            <span className="font-semibold">
+              Viscas
+            </span>
+            . Here's your live workspace overview.
+          </p>
+
+          <p className="mt-4 text-sm text-sky-100">
+            {new Date().toLocaleDateString(undefined, {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
           </p>
         </div>
 
@@ -38,12 +60,16 @@ export default function Welcome() {
               <CalendarDays className="h-5 w-5" />
 
               <span className="text-sm font-medium">
-                Today
+                Today's Meetings
               </span>
             </div>
 
-            <p className="mt-3 text-lg font-semibold">
-              2 Meetings Scheduled
+            <p className="mt-3 text-2xl font-bold">
+              {meetings}
+            </p>
+
+            <p className="text-sm text-sky-100">
+              Scheduled Today
             </p>
           </div>
 
@@ -52,12 +78,16 @@ export default function Welcome() {
               <Sparkles className="h-5 w-5" />
 
               <span className="text-sm font-medium">
-                AI Brief
+                Inbox
               </span>
             </div>
 
-            <p className="mt-3 text-lg font-semibold">
-              3 Important Emails
+            <p className="mt-3 text-2xl font-bold">
+              {unreadEmails}
+            </p>
+
+            <p className="text-sm text-sky-100">
+              Unread Emails
             </p>
           </div>
         </div>

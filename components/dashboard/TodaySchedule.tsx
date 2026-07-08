@@ -1,92 +1,164 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   CalendarDays,
   Clock,
   MapPin,
+  Video,
   ArrowRight,
 } from "lucide-react";
+import Link from "next/link";
 
-const events = [
-  {
-    title: "Team Standup",
-    time: "09:00 AM",
-    location: "Google Meet",
-    type: "Meeting",
-  },
-  {
-    title: "College Project Review",
-    time: "11:30 AM",
-    location: "Classroom",
-    type: "Review",
-  },
-  {
-    title: "AI Product Demo",
-    time: "03:30 PM",
-    location: "Zoom",
-    type: "Presentation",
-  },
-];
+import { getEvents, parseEvent } from "@/lib/calendar";
+
+type Event = {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  start: string;
+  end: string;
+  attendees: any[];
+  meetLink: string;
+};
 
 export default function TodaySchedule() {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTodayEvents() {
+      try {
+        const token = localStorage.getItem(
+          "google_access_token"
+        );
+
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const result = await getEvents(token);
+
+        const today = new Date();
+
+        const todayEvents = (result.items || [])
+          .map(parseEvent)
+          .filter((event: Event) => {
+            const date = new Date(event.start);
+
+            return (
+              date.getDate() === today.getDate() &&
+              date.getMonth() === today.getMonth() &&
+              date.getFullYear() === today.getFullYear()
+            );
+          });
+
+        setEvents(todayEvents);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadTodayEvents();
+  }, []);
+
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100">
-            <CalendarDays className="h-6 w-6 text-sky-600" />
-          </div>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">
+            Today's Schedule
+          </h2>
 
-          <div>
-            <h2 className="text-xl font-semibold">
-              Today's Schedule
-            </h2>
-
-            <p className="text-sm text-slate-500">
-              Upcoming meetings & events
-            </p>
-          </div>
+          <p className="text-sm text-slate-500">
+            Google Calendar
+          </p>
         </div>
 
-        <button className="text-sm font-medium text-sky-600 hover:underline">
+        <Link
+          href="/dashboard/calendar"
+          className="flex items-center gap-2 text-sm font-medium text-sky-600 hover:text-sky-700"
+        >
           View Calendar
-        </button>
+
+          <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
 
-      {/* Event List */}
-      <div className="mt-6 space-y-4">
-        {events.map((event) => (
-          <div
-            key={event.title}
-            className="rounded-2xl border border-slate-200 p-4 transition hover:border-sky-300 hover:bg-slate-50"
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="font-semibold">
-                  {event.title}
-                </h3>
+      {loading ? (
+        <div className="py-10 text-center text-slate-500">
+          Loading schedule...
+        </div>
+      ) : events.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-slate-300 p-8 text-center">
+          <CalendarDays className="mx-auto mb-3 h-10 w-10 text-slate-400" />
 
-                <span className="mt-2 inline-block rounded-full bg-sky-100 px-3 py-1 text-xs font-medium text-sky-700">
-                  {event.type}
-                </span>
+          <p className="font-medium">
+            No meetings today
+          </p>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Enjoy your free schedule.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {events.map((event) => (
+            <div
+              key={event.id}
+              className="rounded-2xl border border-slate-200 p-5 transition hover:border-sky-300 hover:bg-sky-50"
+            >
+              <h3 className="text-lg font-semibold">
+                {event.title}
+              </h3>
+
+              <div className="mt-4 space-y-2 text-sm text-slate-600">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-sky-600" />
+
+                  {new Date(event.start).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+
+                {event.location && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-sky-600" />
+
+                    {event.location}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-sky-600" />
+
+                  {event.attendees.length} Attendee
+                  {event.attendees.length !== 1 ? "s" : ""}
+                </div>
               </div>
 
-              <ArrowRight className="h-5 w-5 text-slate-400" />
+              {event.meetLink && (
+                <a
+                  href={event.meetLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 flex w-fit items-center gap-2 rounded-xl bg-sky-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-700"
+                >
+                  <Video className="h-4 w-4" />
+
+                  Join Google Meet
+                </a>
+              )}
             </div>
-
-            <div className="mt-4 flex flex-col gap-2 text-sm text-slate-500">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                {event.time}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                {event.location}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
