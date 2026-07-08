@@ -1,9 +1,22 @@
 "use client";
 
 import { useGoogleLogin } from "@react-oauth/google";
-import { getInbox } from "@/lib/gmail";
+import {
+  getInbox,
+  getEmail,
+  parseEmail,
+} from "@/lib/gmail";
 
-export default function GmailConnectButton() {
+type GmailConnectButtonProps = {
+  onConnected: (
+    emails: any[],
+    accessToken: string
+  ) => void;
+};
+
+export default function GmailConnectButton({
+  onConnected,
+}: GmailConnectButtonProps) {
   const login = useGoogleLogin({
     scope: [
       "https://www.googleapis.com/auth/gmail.readonly",
@@ -14,14 +27,23 @@ export default function GmailConnectButton() {
     ].join(" "),
 
     onSuccess: async (tokenResponse) => {
-      console.log("Access Token:", tokenResponse.access_token);
-
       try {
         const inbox = await getInbox(tokenResponse.access_token);
 
-        console.log("Inbox:", inbox);
+        const emails = await Promise.all(
+          inbox.messages.map((message: any) =>
+            getEmail(tokenResponse.access_token, message.id)
+          )
+        );
+
+        const parsedEmails = emails.map(parseEmail);
+
+        onConnected(
+          parsedEmails,
+          tokenResponse.access_token
+        );
       } catch (error) {
-        console.error("Failed to fetch inbox:", error);
+        console.error(error);
       }
     },
 
@@ -33,7 +55,7 @@ export default function GmailConnectButton() {
   return (
     <button
       onClick={() => login()}
-      className="rounded-xl bg-sky-600 px-4 py-2 text-white transition hover:bg-sky-700"
+      className="rounded-xl bg-sky-600 px-4 py-2 text-white hover:bg-sky-700"
     >
       Connect Gmail
     </button>
