@@ -99,7 +99,7 @@ export default function SearchBar() {
     <div className="relative w-full max-w-lg" ref={containerRef}>
       {/* Search Input Bar */}
       <div className="relative flex items-center">
-        <Search className="absolute left-4 h-5 w-5 text-slate-400" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 pointer-events-none" />
         
         <input
           ref={inputRef}
@@ -111,7 +111,7 @@ export default function SearchBar() {
           }}
           onFocus={() => setOpen(true)}
           placeholder="Search emails, meetings, events..."
-          className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-12 pr-20 text-sm font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
+          className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-14 pr-20 text-sm font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
         />
 
         {/* Action icons / keys */}

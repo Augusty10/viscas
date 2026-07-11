@@ -8,12 +8,24 @@ import {
   LogOut,
 } from "lucide-react";
 import { logout } from "@/lib/auth-client";
+import { account } from "@/lib/appwrite";
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    async function loadUser() {
+      try {
+        const u = await account.get();
+        setUser({ name: u.name, email: u.email });
+      } catch (err) {
+        console.error("Failed to load user profile", err);
+      }
+    }
+    loadUser();
+
     function handleClickOutside(event: MouseEvent) {
       if (
         dropdownRef.current &&
@@ -35,6 +47,10 @@ export default function UserDropdown() {
     window.location.href = "/login";
   };
 
+  const name = user?.name || "User";
+  const email = user?.email || "user@example.com";
+  const initials = name ? name[0].toUpperCase() : "U";
+
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Profile Button */}
@@ -43,11 +59,11 @@ export default function UserDropdown() {
         className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 transition hover:bg-slate-50"
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-500 font-semibold text-white">
-          D
+          {initials}
         </div>
 
         <div className="hidden text-left md:block">
-          <p className="font-medium">Dhanraj</p>
+          <p className="font-medium">{name}</p>
           <p className="text-xs text-slate-500">
             Welcome back
           </p>
@@ -66,11 +82,11 @@ export default function UserDropdown() {
           {/* User Info */}
           <div className="border-b border-slate-100 p-4">
             <p className="font-semibold">
-              Dhanraj
+              {name}
             </p>
 
             <p className="text-sm text-slate-500">
-              dhanraj@example.com
+              {email}
             </p>
           </div>
 

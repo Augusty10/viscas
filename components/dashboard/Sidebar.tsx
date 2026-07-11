@@ -1,6 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import GmailSidebar from "@/components/gmail/GmailSidebar";
+import CalendarSidebar from "@/components/calender/CalendarSidebar";
+import { useLayoutStore } from "@/hooks/useLayoutStore";
+import { logout } from "@/lib/auth-client";
+
 import {
   LayoutDashboard,
   Mail,
@@ -39,8 +45,33 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const pathname = usePathname();
+  const { sidebarOpen, setSidebarOpen } = useLayoutStore();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.href = "/login";
+    } catch (err) {
+      console.error("Failed to logout from sidebar", err);
+    }
+  };
+
+  // Dynamic routing display
+  if (pathname.startsWith("/dashboard/gmail")) {
+    return <GmailSidebar />;
+  }
+
+  if (pathname.startsWith("/dashboard/calendar")) {
+    return <CalendarSidebar />;
+  }
+
   return (
-    <aside className="flex h-screen w-72 flex-col border-r border-slate-200 bg-white">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:static lg:translate-x-0 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Logo */}
       <div className="border-b border-slate-200 p-6">
         <h1 className="text-3xl font-bold text-sky-600">
@@ -61,6 +92,7 @@ export default function Sidebar() {
             <Link
               key={item.title}
               href={item.href}
+              onClick={() => setSidebarOpen(false)}
               className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-700 transition hover:bg-sky-50 hover:text-sky-600"
             >
               <Icon className="h-5 w-5" />
@@ -72,7 +104,10 @@ export default function Sidebar() {
 
       {/* Logout */}
       <div className="border-t border-slate-200 p-4">
-        <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-red-500 transition hover:bg-red-50">
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-red-500 transition hover:bg-red-50"
+        >
           <LogOut className="h-5 w-5" />
           Logout
         </button>

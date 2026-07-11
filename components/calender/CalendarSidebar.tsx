@@ -7,6 +7,8 @@ import {
   Users,
   Plus,
 } from "lucide-react";
+import Link from "next/link";
+import { useLayoutStore } from "@/hooks/useLayoutStore";
 
 const menu = [
   {
@@ -28,10 +30,22 @@ const menu = [
 ];
 
 export default function CalendarSidebar() {
+  const { sidebarOpen, setSidebarOpen } = useLayoutStore();
+
   return (
-    <div className="flex h-full flex-col">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:static lg:translate-x-0 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Header */}
       <div className="border-b border-slate-200 p-6">
+        <Link
+          href="/dashboard"
+          className="mb-4 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-sky-600 transition"
+        >
+          ← Back to Dashboard
+        </Link>
         <h2 className="text-2xl font-bold text-slate-800">
           Calendar
         </h2>
@@ -78,6 +92,6 @@ export default function CalendarSidebar() {
           </p>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

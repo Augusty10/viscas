@@ -16,6 +16,7 @@ export default function DashboardWorkspace() {
 
     unreadCount,
     meetingsCount,
+    userName,
 
     priorityEmails,
     recentEmails,
@@ -50,6 +51,7 @@ export default function DashboardWorkspace() {
   return (
     <div className="space-y-8">
       <Welcome
+        name={userName}
         unreadEmails={unreadCount}
         meetings={meetingsCount}
       />

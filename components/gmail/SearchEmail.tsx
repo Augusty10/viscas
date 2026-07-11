@@ -31,14 +31,14 @@ export default function SearchEmail({
 
   return (
     <div className="relative w-full">
-      <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition-colors duration-250 group-focus-within:text-sky-500" />
+      <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 pointer-events-none transition-colors duration-250 group-focus-within:text-sky-500" />
 
       <input
         type="text"
         placeholder="Search inbox emails..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-12 pr-12 text-sm font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
+        className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-14 pr-12 text-sm font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
       />
 
       <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center">

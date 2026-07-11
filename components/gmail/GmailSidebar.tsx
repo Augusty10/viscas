@@ -3,6 +3,7 @@
 import ComposeButton from "./ComposeButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLayoutStore } from "@/hooks/useLayoutStore";
 import {
   Inbox,
   Star,
@@ -62,11 +63,22 @@ const tools = [
 
 export default function GmailSidebar() {
   const pathname = usePathname();
+  const { sidebarOpen, setSidebarOpen } = useLayoutStore();
 
   return (
-    <aside className="flex w-72 flex-col border-r border-slate-200 bg-white">
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-300 lg:static lg:translate-x-0 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
       {/* Header */}
       <div className="border-b border-slate-200 p-6">
+        <Link
+          href="/dashboard"
+          className="mb-4 flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-sky-600 transition"
+        >
+          ← Back to Dashboard
+        </Link>
         <h2 className="text-2xl font-bold text-sky-600">
           Gmail
         </h2>
@@ -94,6 +106,7 @@ export default function GmailSidebar() {
               <Link
                 key={item.title}
                 href={item.href}
+                onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-all ${
                   active
                     ? "bg-sky-100 text-sky-700"
@@ -122,6 +135,7 @@ export default function GmailSidebar() {
                 <Link
                   key={item.title}
                   href={item.href}
+                  onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-all ${
                     active
                       ? "bg-sky-100 text-sky-700"

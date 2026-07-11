@@ -17,11 +17,6 @@ export default function GmailLayout({
 }: GmailLayoutProps) {
   return (
     <div className="flex h-[calc(100vh-96px)] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-sm">
-      {/* Sidebar */}
-      <aside className="w-72 border-r border-slate-200 bg-white">
-        <GmailSidebar />
-      </aside>
-
       {/* Main */}
       <div className="flex flex-1 flex-col">
         <GmailTopbar
