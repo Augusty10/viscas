@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, FormEvent, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import GoogleButton from "@/components/auth/GoogleButton";
 import { signupWithEmail, loginWithEmail } from "@/lib/auth-client";
 import { Loader2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,6 +18,25 @@ export default function LoginPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Parse URL query errors (e.g. from OAuth failure redirects)
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      try {
+        const decoded = decodeURIComponent(errorParam);
+        const parsed = JSON.parse(decoded);
+        if (parsed?.type === "user_already_exists" || parsed?.code === 409) {
+          setError("An account with this email address already exists. Please sign in instead.");
+          setIsSignUp(false); // Switch to Sign In tab automatically
+        } else {
+          setError(parsed?.message || "Authentication failed.");
+        }
+      } catch {
+        setError(errorParam);
+      }
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -187,5 +207,19 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-slate-50">
+          <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

@@ -2,20 +2,18 @@
 
 import { PenSquare } from "lucide-react";
 
-export default function ComposeButton() {
+interface ComposeButtonProps {
+  collapsed?: boolean;
+}
+
+export default function ComposeButton({ collapsed = false }: ComposeButtonProps) {
   return (
     <button
-      className="
+      className={`
         flex
-        w-full
         items-center
         justify-center
-        gap-2
-        rounded-2xl
         bg-sky-600
-        px-5
-        py-3
-        font-semibold
         text-white
         shadow-sm
         transition-all
@@ -23,11 +21,12 @@ export default function ComposeButton() {
         hover:bg-sky-700
         hover:shadow-lg
         active:scale-95
-      "
+        ${collapsed ? "h-11 w-11 rounded-full p-0 mx-auto" : "w-full gap-2 rounded-2xl px-5 py-3 font-semibold"}
+      `}
+      title={collapsed ? "Compose Email" : undefined}
     >
-      <PenSquare className="h-5 w-5" />
-
-      Compose
+      <PenSquare className="h-5 w-5 shrink-0" />
+      {!collapsed && "Compose"}
     </button>
   );
 }
