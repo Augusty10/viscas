@@ -38,7 +38,8 @@ export default function SearchEmail({
         placeholder="Search inbox emails..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-14 pr-12 text-sm font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
+        style={{ paddingLeft: "3.5rem" }}
+        className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pr-12 text-sm font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
       />
 
       <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center">

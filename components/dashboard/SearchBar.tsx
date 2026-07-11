@@ -111,7 +111,8 @@ export default function SearchBar() {
           }}
           onFocus={() => setOpen(true)}
           placeholder="Search emails, meetings, events..."
-          className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-14 pr-20 text-sm font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
+          style={{ paddingLeft: "3.5rem" }}
+          className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pr-20 text-sm font-medium text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
         />
 
         {/* Action icons / keys */}

@@ -17,7 +17,8 @@ export default function CalendarTopbar() {
         <input
           type="text"
           placeholder="Search events..."
-          className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-12 pr-4 outline-none transition focus:border-sky-500 focus:bg-white"
+          style={{ paddingLeft: "3rem" }}
+          className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pr-4 outline-none transition focus:border-sky-500 focus:bg-white"
         />
       </div>
 
