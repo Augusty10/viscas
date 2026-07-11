@@ -34,9 +34,9 @@ export default function CalendarWorkspace() {
 
     if (!accessToken) return;
 
-    async function loadEvents() {
+    async function loadEvents(token: string) {
       try {
-        const result = await getEvents(accessToken);
+        const result = await getEvents(token);
 
         const parsed = result.items.map(parseEvent);
 
@@ -50,7 +50,7 @@ export default function CalendarWorkspace() {
       }
     }
 
-    loadEvents();
+    loadEvents(accessToken);
   }, []);
 
   return (

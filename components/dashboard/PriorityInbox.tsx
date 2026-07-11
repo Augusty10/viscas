@@ -19,11 +19,21 @@ type Email = {
   date: string;
 };
 
-export default function PriorityInbox() {
+type PriorityInboxProps = {
+  emails?: Email[];
+};
+
+export default function PriorityInbox({ emails: propEmails }: PriorityInboxProps) {
   const [emails, setEmails] = useState<Email[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(propEmails === undefined);
 
   useEffect(() => {
+    if (propEmails !== undefined) {
+      setEmails(propEmails);
+      setLoading(false);
+      return;
+    }
+
     async function loadPriorityEmails() {
       try {
         const token = localStorage.getItem("google_access_token");
@@ -55,7 +65,7 @@ export default function PriorityInbox() {
     }
 
     loadPriorityEmails();
-  }, []);
+  }, [propEmails]);
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

@@ -1,6 +1,6 @@
 "use client";
 
-import { loginWithGoogle } from "@/lib/auth";
+import { loginWithGoogle } from "@/lib/auth-client";
 
 export default function GoogleButton() {
   return (

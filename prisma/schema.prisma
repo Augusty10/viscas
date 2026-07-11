@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =========================
+// Enums
+// =========================
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+// =========================
+// User
+// =========================
+
+model User {
+  id          String   @id @default(cuid())
+  appwriteId  String   @unique
+  name        String
+  email       String   @unique
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  settings    UserSettings?
+  aiHistory   AIHistory[]
+}
+
+// =========================
+// User Settings
+// =========================
+
+model UserSettings {
+  id            String   @id @default(cuid())
+
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  theme         Theme    @default(SYSTEM)
+  notifications Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// =========================
+// AI History
+// =========================
+
+model AIHistory {
+  id          String    @id @default(cuid())
+
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  feature     String
+  prompt      String    @db.Text
+  response    String    @db.Text
+
+  createdAt   DateTime  @default(now())
+}
+
+// =========================
+// Email Metadata
+// =========================
+
+model Email {
+  id          String    @id @default(cuid())
+
+  gmailId     String    @unique
+  threadId    String
+
+  subject     String
+  sender      String
+
+  priority    Priority  @default(MEDIUM)
+
+  summary     String?   @db.Text
+
+  createdAt   DateTime  @default(now())
+
+  @@index([gmailId])
+  @@index([threadId])
+}
+
+// =========================
+// Calendar Event
+// =========================
+
+model CalendarEvent {
+  id            String    @id @default(cuid())
+
+  googleEventId String    @unique
+
+  title         String
+  description   String?   @db.Text
+
+  location      String?
+
+  start         DateTime
+  end           DateTime
+
+  aiSummary     String?   @db.Text
+
+  createdAt     DateTime  @default(now())
+
+  @@index([googleEventId])
+}

@@ -1,22 +1,25 @@
-import { OAuthProvider } from "appwrite";
-import { account } from "./appwrite";
+import { account } from "@/lib/appwrite";
+import prisma from "@/lib/prisma";
 
-export async function loginWithGoogle() {
-  account.createOAuth2Session(
-    OAuthProvider.Google,
-    "http://localhost:3000/dashboard",
-    "http://localhost:3000/login"
-  );
-}
+export async function syncUser() {
+  const user = await account.get();
 
-export async function logout() {
-  await account.deleteSession("current");
-}
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      appwriteId: user.$id,
+    },
+  });
 
-export async function getCurrentUser() {
-  try {
-    return await account.get();
-  } catch {
-    return null;
+  if (existingUser) {
+    return existingUser;
   }
+
+  return prisma.user.create({
+    data: {
+      appwriteId: user.$id,
+      name: user.name,
+      email: user.email,
+      avatar: null,
+    },
+  });
 }

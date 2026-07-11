@@ -76,7 +76,7 @@ export default function DashboardWorkspace() {
        <AIAssistant
     emails={recentEmails}
     events={todayEvents}
-  />/
+  />
 
         <QuickActions />
       </section>

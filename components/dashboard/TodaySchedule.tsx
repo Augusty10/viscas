@@ -23,11 +23,21 @@ type Event = {
   meetLink: string;
 };
 
-export default function TodaySchedule() {
+type TodayScheduleProps = {
+  events?: Event[];
+};
+
+export default function TodaySchedule({ events: propEvents }: TodayScheduleProps) {
   const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(propEvents === undefined);
 
   useEffect(() => {
+    if (propEvents !== undefined) {
+      setEvents(propEvents);
+      setLoading(false);
+      return;
+    }
+
     async function loadTodayEvents() {
       try {
         const token = localStorage.getItem(
@@ -64,7 +74,7 @@ export default function TodaySchedule() {
     }
 
     loadTodayEvents();
-  }, []);
+  }, [propEvents]);
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

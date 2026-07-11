@@ -21,7 +21,7 @@ export default function AIAssistant({
       setLoading(true);
 
       const response = await fetch(
-        "/api/ai/daily-brief",
+        "/api/ai/brief",
         {
           method: "POST",
 

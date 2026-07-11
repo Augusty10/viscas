@@ -125,7 +125,7 @@ export default function GmailWorkspace() {
           </section>
 
           <aside className="col-span-3 space-y-6 overflow-y-auto">
-            <AISummary email={selectedEmail}/>
+            <AISummary email={selectedEmail?.body || selectedEmail?.snippet || ""}/>
             <SuggestedReplies />
             <EmailActions />
           </aside>

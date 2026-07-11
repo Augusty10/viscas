@@ -7,7 +7,7 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import { logout } from "@/lib/auth";
+import { logout } from "@/lib/auth-client";
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false);

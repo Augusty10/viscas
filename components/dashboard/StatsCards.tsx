@@ -24,7 +24,17 @@ type Stat = {
   iconColor: string;
 };
 
-export default function StatsCards() {
+type StatsCardsProps = {
+  unreadEmails?: number;
+  meetings?: number;
+  priorityEmails?: number;
+};
+
+export default function StatsCards({
+  unreadEmails,
+  meetings,
+  priorityEmails,
+}: StatsCardsProps) {
   const [stats, setStats] = useState<Stat[]>([
     {
       title: "Unread Emails",
@@ -61,6 +71,44 @@ export default function StatsCards() {
   ]);
 
   useEffect(() => {
+    if (unreadEmails !== undefined && meetings !== undefined && priorityEmails !== undefined) {
+      setStats([
+        {
+          title: "Unread Emails",
+          value: unreadEmails.toString(),
+          subtitle: "Live Gmail",
+          icon: Mail,
+          iconBg: "bg-sky-100",
+          iconColor: "text-sky-600",
+        },
+        {
+          title: "Priority Emails",
+          value: priorityEmails.toString(),
+          subtitle: "Important",
+          icon: AlertTriangle,
+          iconBg: "bg-red-100",
+          iconColor: "text-red-600",
+        },
+        {
+          title: "Today's Meetings",
+          value: meetings.toString(),
+          subtitle: "Google Calendar",
+          icon: CalendarDays,
+          iconBg: "bg-green-100",
+          iconColor: "text-green-600",
+        },
+        {
+          title: "AI Insights",
+          value: (unreadEmails + meetings).toString(),
+          subtitle: "Workspace Analysis",
+          icon: Sparkles,
+          iconBg: "bg-violet-100",
+          iconColor: "text-violet-600",
+        },
+      ]);
+      return;
+    }
+
     async function loadStats() {
       try {
         const token = localStorage.getItem(
@@ -139,7 +187,7 @@ export default function StatsCards() {
     }
 
     loadStats();
-  }, []);
+  }, [unreadEmails, meetings, priorityEmails]);
 
   return (
     <section className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
