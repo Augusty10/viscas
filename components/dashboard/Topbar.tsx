@@ -7,15 +7,7 @@ export default function Topbar() {
   return (
     <header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-8">
       {/* Search */}
-      <div className="relative w-full max-w-md">
-        <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
-
-        <input
-          type="text"
-          placeholder="Search emails, events..."
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 outline-none transition focus:border-sky-500"
-        />
-      </div>
+      <SearchBar />
 
       {/* Right Side */}
       <div className="flex items-center gap-6">
