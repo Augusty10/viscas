@@ -25,13 +25,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-   <body className={`${inter.variable} ${sora.variable}`}>
-  <GoogleOAuthProvider
-    clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
-  >
-    {children}
-  </GoogleOAuthProvider>
-</body>
+      <body className={`${inter.variable} ${sora.variable}`}>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
+          {children}
+        </GoogleOAuthProvider>
+      </body>
     </html>
   );
 }
