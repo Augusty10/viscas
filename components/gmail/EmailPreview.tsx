@@ -10,6 +10,8 @@ import {
   User,
 } from "lucide-react";
 
+import { useGmailStore } from "@/hooks/useGmail";
+
 export type GmailEmail = {
   id: string;
   sender: string;
@@ -26,6 +28,7 @@ type EmailPreviewProps = {
 export default function EmailPreview({
   email,
 }: EmailPreviewProps) {
+  const openCompose = useGmailStore((state) => state.openCompose);
   if (!email) {
     return (
       <div className="flex h-full items-center justify-center rounded-3xl border border-slate-200 bg-white">
@@ -41,6 +44,29 @@ export default function EmailPreview({
       </div>
     );
   }
+
+  const extractEmailAddress = (sender: string) => {
+    const match = sender.match(/<([^>]+)>/);
+    return match ? match[1] : sender;
+  };
+
+  const handleReply = () => {
+    if (!email) return;
+    const to = extractEmailAddress(email.sender);
+    const subject = email.subject.startsWith("Re:") ? email.subject : `Re: ${email.subject}`;
+    const dateStr = new Date(email.date).toLocaleString();
+    const body = `\n\nOn ${dateStr}, ${email.sender} wrote:\n> ${email.body.split("\n").join("\n> ")}`;
+    
+    openCompose({ to, subject, body });
+  };
+
+  const handleForward = () => {
+    if (!email) return;
+    const subject = email.subject.startsWith("Fwd:") ? email.subject : `Fwd: ${email.subject}`;
+    const body = `\n\n---------- Forwarded message ---------\nFrom: ${email.sender}\nDate: ${email.date}\nSubject: ${email.subject}\n\n${email.body}`;
+    
+    openCompose({ to: "", subject, body });
+  };
 
   return (
     <div className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white shadow-sm">
@@ -77,20 +103,24 @@ export default function EmailPreview({
       </div>
 
       <div className="mt-8">
-  <AISummary
-    email={email.body || email.snippet}
-  />
-</div>
+        <AISummary email={email.body || email.snippet} />
+      </div>
 
       {/* Footer */}
       <div className="flex items-center justify-between border-t border-slate-200 p-5">
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 rounded-xl border px-4 py-2 hover:bg-slate-100">
+          <button
+            onClick={handleReply}
+            className="flex items-center gap-2 rounded-xl border px-4 py-2 hover:bg-slate-100 cursor-pointer"
+          >
             <Reply className="h-4 w-4" />
             Reply
           </button>
 
-          <button className="flex items-center gap-2 rounded-xl border px-4 py-2 hover:bg-slate-100">
+          <button
+            onClick={handleForward}
+            className="flex items-center gap-2 rounded-xl border px-4 py-2 hover:bg-slate-100 cursor-pointer"
+          >
             <Forward className="h-4 w-4" />
             Forward
           </button>

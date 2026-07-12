@@ -1,14 +1,18 @@
 "use client";
 
 import { PenSquare } from "lucide-react";
+import { useGmailStore } from "@/hooks/useGmail";
 
 interface ComposeButtonProps {
   collapsed?: boolean;
 }
 
 export default function ComposeButton({ collapsed = false }: ComposeButtonProps) {
+  const openCompose = useGmailStore((state) => state.openCompose);
+
   return (
     <button
+      onClick={() => openCompose()}
       className={`
         flex
         items-center

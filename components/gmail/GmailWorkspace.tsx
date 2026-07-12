@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import GmailLayout from "./GmailLayout";
 import GmailConnectButton from "./GmailConnectButton";
@@ -9,6 +9,8 @@ import EmailPreview from "./EmailPreview";
 import AISummary from "./AISummary";
 import SuggestedReplies from "./SuggestedReplies";
 import EmailActions from "./EmailActions";
+import ComposeWindow from "./ComposeWindow";
+import { useGmailStore } from "@/hooks/useGmail";
 
 import {
   getInbox,
@@ -30,6 +32,35 @@ export default function GmailWorkspace() {
   const [emails, setEmails] = useState<Email[]>([]);
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [accessToken, setAccessToken] = useState("");
+  const setStoreAccessToken = useGmailStore((state) => state.setAccessToken);
+
+  // Load token from localStorage on mount
+  useEffect(() => {
+    const token = localStorage.getItem("google_access_token");
+    if (token) {
+      setAccessToken(token);
+      setStoreAccessToken(token);
+
+      const loadInbox = async () => {
+        try {
+          const inbox = await getInbox(token);
+          const emailsData = await Promise.all(
+            inbox.messages.map((message: any) =>
+              getEmail(token, message.id)
+            )
+          );
+          const parsed = emailsData.map(parseEmail);
+          setEmails(parsed);
+          if (parsed.length > 0) {
+            setSelectedEmail(parsed[0]);
+          }
+        } catch (error) {
+          console.error("Auto-fetch failed, token might be expired:", error);
+        }
+      };
+      loadInbox();
+    }
+  }, [setStoreAccessToken]);
 
   const handleConnected = (
     gmailEmails: Email[],
@@ -37,6 +68,7 @@ export default function GmailWorkspace() {
   ) => {
     setEmails(gmailEmails);
     setAccessToken(token);
+    setStoreAccessToken(token);
 
     if (gmailEmails.length > 0) {
       setSelectedEmail(gmailEmails[0]);
@@ -126,11 +158,13 @@ export default function GmailWorkspace() {
 
           <aside className="col-span-3 space-y-6 overflow-y-auto">
             <AISummary email={selectedEmail?.body || selectedEmail?.snippet || ""}/>
-            <SuggestedReplies />
+            <SuggestedReplies email={selectedEmail} />
             <EmailActions />
           </aside>
         </div>
       </GmailLayout>
+
+      <ComposeWindow onSent={handleRefresh} />
     </>
   );
 }

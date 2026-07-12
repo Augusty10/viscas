@@ -188,3 +188,45 @@ export async function getImportantEmails(
 
   return response.json();
 }
+
+export async function sendEmail(
+  accessToken: string,
+  to: string,
+  subject: string,
+  body: string
+) {
+  const emailContent = [
+    `To: ${to}`,
+    'Content-Type: text/plain; charset="UTF-8"',
+    'Mime-Version: 1.0',
+    `Subject: ${subject}`,
+    '',
+    body
+  ].join('\r\n');
+
+  const encodedEmail = btoa(unescape(encodeURIComponent(emailContent)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+
+  const response = await fetch(
+    "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        raw: encodedEmail,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || "Failed to send email");
+  }
+
+  return response.json();
+}
