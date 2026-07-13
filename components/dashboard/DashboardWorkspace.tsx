@@ -62,26 +62,28 @@ export default function DashboardWorkspace() {
         priorityEmails={priorityEmails.length}
       />
 
-      <section className="grid grid-cols-1 gap-8 xl:grid-cols-2">
-        <PriorityInbox
-          emails={priorityEmails}
-        />
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        {/* Left Column - Main Content (2/3 width) */}
+        <div className="lg:col-span-2 space-y-8">
+          <AIAssistant
+            emails={recentEmails}
+            events={todayEvents}
+          />
 
-        <TodaySchedule
-          events={todayEvents}
-        />
-      </section>
+          <PriorityInbox
+            emails={priorityEmails}
+          />
+        </div>
 
-      <section className="grid grid-cols-1 gap-8 xl:grid-cols-2">
-    
-       
-       <AIAssistant
-    emails={recentEmails}
-    events={todayEvents}
-  />
+        {/* Right Column - Sidebar Content (1/3 width) */}
+        <div className="space-y-8">
+          <TodaySchedule
+            events={todayEvents}
+          />
 
-        <QuickActions />
-      </section>
+          <QuickActions />
+        </div>
+      </div>
     </div>
   );
 }

@@ -31,3 +31,64 @@ export function parseEvent(event: any) {
     meetLink: event.hangoutLink || "",
   };
 }
+
+export async function createEvent(
+  accessToken: string,
+  eventData: {
+    title: string;
+    description?: string;
+    location?: string;
+    start: string;
+    end: string;
+    attendees?: string[];
+    createMeetLink?: boolean;
+  }
+) {
+  const body: any = {
+    summary: eventData.title,
+    description: eventData.description || "",
+    location: eventData.location || "",
+    start: {
+      dateTime: eventData.start,
+    },
+    end: {
+      dateTime: eventData.end,
+    },
+  };
+
+  if (eventData.attendees && eventData.attendees.length > 0) {
+    body.attendees = eventData.attendees.map((email) => ({ email }));
+  }
+
+  if (eventData.createMeetLink) {
+    body.conferenceData = {
+      createRequest: {
+        requestId: Math.random().toString(36).substring(2, 11),
+        conferenceSolutionKey: {
+          type: "hangoutsMeet",
+        },
+      },
+    };
+  }
+
+  const url = new URL("https://www.googleapis.com/calendar/v3/calendars/primary/events");
+  if (eventData.createMeetLink) {
+    url.searchParams.append("conferenceDataVersion", "1");
+  }
+
+  const response = await fetch(url.toString(), {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error?.message || "Failed to create calendar event");
+  }
+
+  return response.json();
+}

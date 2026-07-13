@@ -8,8 +8,10 @@ import EventPreview from "./EventPreview";
 import TodayAgenda from "./TodayAgenda";
 import UpcomingMeetings from "./UpcomingMeetings";
 import AIPlanner from "./AIPlanner";
+import NewEventDialog from "./NewEventDialog";
 
 import { getEvents, parseEvent } from "@/lib/calendar";
+import { useCalendarStore } from "@/hooks/useCalendar";
 
 type Event = {
   id: string;
@@ -26,6 +28,8 @@ export default function CalendarWorkspace() {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] =
     useState<Event | null>(null);
+
+  const { refreshTrigger } = useCalendarStore();
 
   useEffect(() => {
     const accessToken = localStorage.getItem(
@@ -51,33 +55,36 @@ export default function CalendarWorkspace() {
     }
 
     loadEvents(accessToken);
-  }, []);
+  }, [refreshTrigger]);
 
   return (
-    <CalendarLayout>
-      <div className="grid h-full grid-cols-12 gap-6">
-        {/* Events */}
-        <section className="col-span-4 overflow-y-auto">
-          <EventList
-            events={events}
-            onSelect={setSelectedEvent}
-          />
-        </section>
+    <>
+      <CalendarLayout>
+        <div className="grid h-full grid-cols-12 gap-6">
+          {/* Events */}
+          <section className="col-span-4 overflow-y-auto">
+            <EventList
+              events={events}
+              onSelect={setSelectedEvent}
+            />
+          </section>
 
-        {/* Preview */}
-        <section className="col-span-5 overflow-y-auto">
-          <EventPreview event={selectedEvent} />
-        </section>
+          {/* Preview */}
+          <section className="col-span-5 overflow-y-auto">
+            <EventPreview event={selectedEvent} />
+          </section>
 
-        {/* Right Sidebar */}
-        <aside className="col-span-3 space-y-6 overflow-y-auto">
-          <TodayAgenda events={events} />
+          {/* Right Sidebar */}
+          <aside className="col-span-3 space-y-6 overflow-y-auto">
+            <TodayAgenda events={events} />
 
-          <UpcomingMeetings events={events} />
+            <UpcomingMeetings events={events} />
 
-          <AIPlanner event={selectedEvent} />
-        </aside>
-      </div>
-    </CalendarLayout>
+            <AIPlanner event={selectedEvent} />
+          </aside>
+        </div>
+      </CalendarLayout>
+      <NewEventDialog />
+    </>
   );
 }

@@ -71,7 +71,7 @@ export default function GmailSidebar() {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-slate-200 bg-white transition-all duration-300 lg:static lg:translate-x-0 ${
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-slate-200 bg-white transition-all duration-300 lg:static lg:translate-x-0 shrink-0 ${
         isCollapsed ? "lg:w-20 w-72" : "w-72 lg:w-72"
       } ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"

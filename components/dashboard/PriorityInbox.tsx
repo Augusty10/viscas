@@ -106,7 +106,7 @@ export default function PriorityInbox({ emails: propEmails }: PriorityInboxProps
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1">
           {emails.map((email) => (
             <div
               key={email.id}

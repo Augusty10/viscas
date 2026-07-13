@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useLayoutStore } from "@/hooks/useLayoutStore";
+import { useCalendarStore } from "@/hooks/useCalendar";
 
 const menu = [
   {
@@ -35,10 +36,11 @@ const menu = [
 
 export default function CalendarSidebar() {
   const { sidebarOpen, setSidebarOpen, isCollapsed, toggleCollapsed } = useLayoutStore();
+  const { setNewEventOpen } = useCalendarStore();
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-slate-200 bg-white transition-all duration-300 lg:static lg:translate-x-0 ${
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col border-r border-slate-200 bg-white transition-all duration-300 lg:static lg:translate-x-0 shrink-0 ${
         isCollapsed ? "lg:w-20 w-72" : "w-72 lg:w-72"
       } ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -70,7 +72,8 @@ export default function CalendarSidebar() {
         {/* New Event Button */}
         <div className={isCollapsed ? "py-4 w-full flex justify-center" : "mt-2"}>
           <button
-            className={`flex items-center justify-center bg-sky-600 text-white font-medium transition hover:bg-sky-700 active:scale-95 shadow-sm hover:shadow ${
+            onClick={() => setNewEventOpen(true)}
+            className={`flex items-center justify-center bg-sky-600 text-white font-medium transition hover:bg-sky-700 active:scale-95 shadow-sm hover:shadow cursor-pointer ${
               isCollapsed ? "h-11 w-11 rounded-full p-0 mx-auto" : "w-full gap-2 rounded-xl px-4 py-3"
             }`}
             title={isCollapsed ? "New Event" : undefined}

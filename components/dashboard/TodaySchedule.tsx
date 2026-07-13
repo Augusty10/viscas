@@ -117,7 +117,7 @@ export default function TodaySchedule({ events: propEvents }: TodayScheduleProps
           </p>
         </div>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-5 max-h-[380px] overflow-y-auto pr-1">
           {events.map((event) => (
             <div
               key={event.id}
