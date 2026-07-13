@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   CheckCircle2,
+  Calendar,
 } from "lucide-react";
 import Link from "next/link";
 import { useLayoutStore } from "@/hooks/useLayoutStore";
@@ -17,26 +18,25 @@ import { useCalendarStore } from "@/hooks/useCalendar";
 
 const menu = [
   {
-    title: "Today",
+    title: "Day View",
     icon: CalendarDays,
+    view: "day" as const,
   },
   {
-    title: "Upcoming",
-    icon: Clock,
-  },
-  {
-    title: "This Week",
+    title: "Week View",
     icon: CalendarRange,
+    view: "week" as const,
   },
   {
-    title: "Meetings",
-    icon: Users,
+    title: "Month View",
+    icon: Calendar,
+    view: "month" as const,
   },
 ];
 
 export default function CalendarSidebar() {
   const { sidebarOpen, setSidebarOpen, isCollapsed, toggleCollapsed } = useLayoutStore();
-  const { setNewEventOpen } = useCalendarStore();
+  const { setNewEventOpen, currentView, setCurrentView } = useCalendarStore();
 
   return (
     <aside
@@ -107,16 +107,22 @@ export default function CalendarSidebar() {
       <div className="flex-1 space-y-1 p-4">
         {menu.map((item) => {
           const Icon = item.icon;
+          const isActive = currentView === item.view;
 
           return (
             <button
               key={item.title}
-              className={`flex w-full items-center rounded-xl text-left transition hover:bg-sky-50 hover:text-sky-600 text-slate-700 ${
+              onClick={() => setCurrentView(item.view)}
+              className={`flex w-full items-center rounded-xl text-left transition cursor-pointer ${
+                isActive
+                  ? "bg-sky-50 text-sky-600 font-bold"
+                  : "hover:bg-slate-50 text-slate-700 hover:text-slate-900"
+              } ${
                 isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3"
               }`}
               title={isCollapsed ? item.title : undefined}
             >
-              <Icon className="h-5 w-5 shrink-0" />
+              <Icon className={`h-5 w-5 shrink-0 ${isActive ? "text-sky-600" : "text-slate-400"}`} />
               {!isCollapsed && <span className="font-semibold text-sm">{item.title}</span>}
             </button>
           );

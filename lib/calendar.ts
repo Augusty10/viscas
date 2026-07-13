@@ -92,3 +92,70 @@ export async function createEvent(
 
   return response.json();
 }
+
+export async function updateEvent(
+  accessToken: string,
+  eventId: string,
+  eventData: {
+    title: string;
+    description?: string;
+    location?: string;
+    start: string;
+    end: string;
+    attendees?: string[];
+  }
+) {
+  const body: any = {
+    summary: eventData.title,
+    description: eventData.description || "",
+    location: eventData.location || "",
+    start: {
+      dateTime: eventData.start,
+    },
+    end: {
+      dateTime: eventData.end,
+    },
+  };
+
+  if (eventData.attendees) {
+    body.attendees = eventData.attendees.map((email) => ({ email }));
+  }
+
+  const url = new URL(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`);
+  url.searchParams.append("sendUpdates", "all");
+
+  const response = await fetch(url.toString(), {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error?.message || "Failed to update calendar event");
+  }
+
+  return response.json();
+}
+
+export async function deleteEvent(accessToken: string, eventId: string) {
+  const url = new URL(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`);
+  url.searchParams.append("sendUpdates", "all");
+
+  const response = await fetch(url.toString(), {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error?.message || "Failed to delete calendar event");
+  }
+
+  return true;
+}

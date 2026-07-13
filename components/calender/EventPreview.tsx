@@ -8,16 +8,22 @@ import {
   Video,
   FileText,
   ExternalLink,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 
 import { CalendarEvent } from "./EventList";
 
 type EventPreviewProps = {
   event: CalendarEvent | null;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 export default function EventPreview({
   event,
+  onEdit,
+  onDelete,
 }: EventPreviewProps) {
   if (!event) {
     return (
@@ -44,9 +50,35 @@ export default function EventPreview({
     <div className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white shadow-sm">
       {/* Header */}
       <div className="border-b border-slate-200 p-6">
-        <h1 className="text-2xl font-bold">
-          {event.title}
-        </h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-2xl font-bold text-slate-800 break-words flex-1">
+            {event.title}
+          </h1>
+
+          {/* Edit/Delete Actions */}
+          {(onEdit || onDelete) && (
+            <div className="flex items-center gap-1.5 shrink-0">
+              {onEdit && (
+                <button
+                  onClick={onEdit}
+                  className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 hover:text-sky-600 transition text-slate-500 cursor-pointer"
+                  title="Edit Event"
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  onClick={onDelete}
+                  className="p-2 rounded-xl border border-red-100 hover:bg-red-50 hover:text-red-600 transition text-red-500 cursor-pointer"
+                  title="Delete Event"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
 
         <div className="mt-5 space-y-3">
           <div className="flex items-center gap-3 text-slate-600">
