@@ -57,7 +57,7 @@ export default function Hero() {
 <div>
 
 <div className="flex items-center justify-center">
-  <div className="relative flex h-[500px] w-full max-w-lg items-center justify-center rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl p-8 overflow-hidden group">
+  <div className="relative flex h-125 w-full max-w-lg items-center justify-center rounded-3xl border border-slate-200 bg-linear-to-br from-slate-900 to-slate-800 shadow-2xl p-8 overflow-hidden group">
     {/* Decorative blur inside dashboard preview */}
     <div className="absolute top-0 right-0 h-40 w-40 bg-sky-500/10 rounded-full blur-2xl group-hover:scale-110 transition duration-500 pointer-events-none" />
     <div className="absolute bottom-0 left-0 h-40 w-40 bg-cyan-500/10 rounded-full blur-2xl group-hover:scale-110 transition duration-500 pointer-events-none" />

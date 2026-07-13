@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import GoogleButton from "@/components/auth/GoogleButton";
 import { signupWithEmail, loginWithEmail } from "@/lib/auth-client";
 import { Loader2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { account } from "@/lib/appwrite";
 
 function LoginForm() {
   const router = useRouter();
@@ -18,6 +19,19 @@ function LoginForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Check if session is already active on mount and redirect to dashboard
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        await account.get();
+        router.push("/dashboard");
+      } catch {
+        // No session active, let user sign in
+      }
+    }
+    checkSession();
+  }, [router]);
 
   // Parse URL query errors (e.g. from OAuth failure redirects)
   useEffect(() => {
@@ -61,6 +75,13 @@ function LoginForm() {
     setLoading(true);
 
     try {
+      try {
+        // Clear any existing active session first to prevent 409 Conflict (session already active)
+        await account.deleteSession("current");
+      } catch {
+        // Ignore if there is no active session
+      }
+
       if (isSignUp) {
         // Sign Up
         await signupWithEmail(email, password, name);
