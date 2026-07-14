@@ -4,6 +4,7 @@ import SearchBar from "./SearchBar";
 import { Bell, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useLayoutStore } from "@/hooks/useLayoutStore";
+import UserDropdown from "./UserDropdown";
 
 export default function Topbar() {
   const pathname = usePathname();
@@ -30,18 +31,7 @@ export default function Topbar() {
           <Bell className="h-5 w-5" />
         </button>
 
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-sky-500 font-semibold text-white">
-            D
-          </div>
-
-          <div>
-            <p className="font-semibold">Dhanraj</p>
-            <p className="text-sm text-slate-500">
-              Welcome back
-            </p>
-          </div>
-        </div>
+        <UserDropdown />
       </div>
     </header>
   );

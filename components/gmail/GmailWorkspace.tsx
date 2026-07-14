@@ -17,6 +17,7 @@ import {
   getEmail,
   parseEmail,
   searchEmails,
+  getFolderMessages,
 } from "@/lib/gmail";
 
 type Email = {
@@ -28,13 +29,17 @@ type Email = {
   date: string;
 };
 
-export default function GmailWorkspace() {
+type GmailWorkspaceProps = {
+  currentFolder?: string;
+};
+
+export default function GmailWorkspace({ currentFolder = "inbox" }: GmailWorkspaceProps) {
   const [emails, setEmails] = useState<Email[]>([]);
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [accessToken, setAccessToken] = useState("");
   const setStoreAccessToken = useGmailStore((state) => state.setAccessToken);
 
-  // Load token from localStorage on mount
+  // Load token from localStorage on mount & when currentFolder changes
   useEffect(() => {
     const token = localStorage.getItem("google_access_token");
     if (token) {
@@ -43,9 +48,10 @@ export default function GmailWorkspace() {
 
       const loadInbox = async () => {
         try {
-          const inbox = await getInbox(token);
+          const inbox = await getFolderMessages(token, currentFolder);
+          const messages = inbox.messages || [];
           const emailsData = await Promise.all(
-            inbox.messages.map((message: any) =>
+            messages.map((message: any) =>
               getEmail(token, message.id)
             )
           );
@@ -53,6 +59,8 @@ export default function GmailWorkspace() {
           setEmails(parsed);
           if (parsed.length > 0) {
             setSelectedEmail(parsed[0]);
+          } else {
+            setSelectedEmail(null);
           }
         } catch (error) {
           console.error("Auto-fetch failed, token might be expired:", error);
@@ -60,7 +68,7 @@ export default function GmailWorkspace() {
       };
       loadInbox();
     }
-  }, [setStoreAccessToken]);
+  }, [setStoreAccessToken, currentFolder]);
 
   const handleConnected = (
     gmailEmails: Email[],
@@ -114,10 +122,10 @@ export default function GmailWorkspace() {
     if (!accessToken) return;
 
     try {
-      const inbox = await getInbox(accessToken);
-
+      const inbox = await getFolderMessages(accessToken, currentFolder);
+      const messages = inbox.messages || [];
       const fetchedEmails = await Promise.all(
-        inbox.messages.map((message: any) =>
+        messages.map((message: any) =>
           getEmail(accessToken, message.id)
         )
       );
@@ -128,6 +136,8 @@ export default function GmailWorkspace() {
 
       if (parsed.length > 0) {
         setSelectedEmail(parsed[0]);
+      } else {
+        setSelectedEmail(null);
       }
     } catch (err) {
       console.error(err);

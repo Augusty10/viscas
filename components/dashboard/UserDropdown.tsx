@@ -12,14 +12,39 @@ import { account } from "@/lib/appwrite";
 
 export default function UserDropdown() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{
+    name: string;
+    email: string;
+    avatarUrl?: string;
+  } | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadUser() {
       try {
         const u = await account.get();
-        setUser({ name: u.name, email: u.email });
+        let avatarUrl: string | undefined = undefined;
+
+        const token = localStorage.getItem("google_access_token");
+        if (token) {
+          try {
+            const res = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`);
+            if (res.ok) {
+              const googleUser = await res.json();
+              if (googleUser.picture) {
+                avatarUrl = googleUser.picture;
+              }
+            }
+          } catch (googleErr) {
+            console.warn("Failed to fetch Google profile picture:", googleErr);
+          }
+        }
+
+        setUser({
+          name: u.name || "User",
+          email: u.email || "",
+          avatarUrl,
+        });
       } catch (err) {
         console.error("Failed to load user profile", err);
       }
@@ -49,6 +74,7 @@ export default function UserDropdown() {
 
   const name = user?.name || "User";
   const email = user?.email || "user@example.com";
+  const avatarUrl = user?.avatarUrl;
   const initials = name ? name[0].toUpperCase() : "U";
 
   return (
@@ -56,21 +82,28 @@ export default function UserDropdown() {
       {/* Profile Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 transition hover:bg-slate-50"
+        className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 transition hover:bg-slate-50 cursor-pointer"
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-500 font-semibold text-white">
-          {initials}
-        </div>
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt={name}
+            className="h-10 w-10 rounded-full object-cover border border-slate-100"
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-500 font-semibold text-white">
+            {initials}
+          </div>
+        )}
 
         <div className="hidden text-left md:block">
-          <p className="font-medium">{name}</p>
-          <p className="text-xs text-slate-500">
-            Welcome back
-          </p>
+          <p className="font-semibold text-sm leading-tight text-slate-800">{name}</p>
+          <p className="text-xs text-slate-500 truncate max-w-[150px]">{email}</p>
         </div>
 
         <ChevronDown
-          className={`h-4 w-4 transition-transform ${
+          className={`h-4 w-4 text-slate-500 transition-transform ${
             open ? "rotate-180" : ""
           }`}
         />
