@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
+import { account } from "@/lib/appwrite";
 
 type Props = {
   emails?: any[];
@@ -13,8 +14,15 @@ export default function AIAssistant({
   events = [],
 }: Props) {
   const [loading, setLoading] = useState(false);
-
   const [brief, setBrief] = useState("");
+  const [appwriteId, setAppwriteId] = useState("");
+
+  useEffect(() => {
+    account
+      .get()
+      .then((u) => setAppwriteId(u.$id))
+      .catch((err) => console.error("AIAssistant: Failed to load user ID:", err));
+  }, []);
 
   async function generateBrief() {
     try {
@@ -32,13 +40,18 @@ export default function AIAssistant({
 
           body: JSON.stringify({
             emails: JSON.stringify(emails),
-
             calendar: JSON.stringify(events),
+            appwriteId,
           }),
         }
       );
 
       const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        setBrief(data.message || "Failed to generate daily brief.");
+        return;
+      }
 
       setBrief(data.brief);
     } finally {

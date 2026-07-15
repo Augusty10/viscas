@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateMeetingPlan, checkAILimit } from "@/lib/ai";
+import { generateChatResponse, checkAILimit } from "@/lib/ai";
 import prisma from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
-    const { event, appwriteId } = await request.json();
+    const { message, history = [], emails = [], calendar = [], appwriteId } = await request.json();
 
-    if (!event) {
+    if (!message) {
       return NextResponse.json(
         {
           success: false,
-          message: "Meeting details are required.",
+          message: "Message is required.",
         },
         {
           status: 400,
@@ -32,64 +32,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const meeting = `
-Title: ${event.title}
+    const reply = await generateChatResponse(message, history, emails, calendar);
 
-Description:
-${event.description}
-
-Location:
-${event.location}
-
-Start:
-${event.start}
-
-End:
-${event.end}
-
-Attendees:
-${event.attendees
-  ?.map((attendee: any) => attendee.email)
-  .join(", ") || "None"}
-
-Google Meet:
-${event.meetLink || "N/A"}
-`;
-
-    const plan = await generateMeetingPlan(meeting);
-
-    // Save history
+    // Persist to AI History if user is authenticated and synced
     if (appwriteId) {
       try {
         const user = await prisma.user.findUnique({
           where: { appwriteId },
         });
+
         if (user) {
           await prisma.aIHistory.create({
             data: {
               userId: user.id,
-              feature: "planner",
-              prompt: `Meeting plan query for: ${event.title}`,
-              response: plan || "",
+              feature: "chat",
+              prompt: message,
+              response: reply || "",
             },
           });
         }
-      } catch (dbErr) {
-        console.error("Failed to log planner to database:", dbErr);
+      } catch (dbError) {
+        console.error("Failed to log AI History to database:", dbError);
       }
     }
 
     return NextResponse.json({
       success: true,
-      plan,
+      reply,
     });
   } catch (error) {
-    console.error("AI Planner Error:", error);
+    console.error("AI Chat Error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to generate meeting plan.",
+        message: "Failed to generate chat response.",
       },
       {
         status: 500,

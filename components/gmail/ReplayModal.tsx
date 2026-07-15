@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { account } from "@/lib/appwrite";
 
 import {
   Sparkles,
@@ -39,6 +40,15 @@ export default function ReplyModal({
   const [sending, setSending] =
     useState(false);
 
+  const [appwriteId, setAppwriteId] = useState("");
+
+  useEffect(() => {
+    account
+      .get()
+      .then((u) => setAppwriteId(u.$id))
+      .catch((err) => console.error("ReplayModal: Failed to load user ID:", err));
+  }, []);
+
   if (!open) return null;
 
   async function generateAIReply() {
@@ -57,6 +67,7 @@ export default function ReplyModal({
 
           body: JSON.stringify({
             email,
+            appwriteId,
           }),
         }
       );

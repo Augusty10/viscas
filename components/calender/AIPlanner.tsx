@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { account } from "@/lib/appwrite";
 import {
   Sparkles,
   Loader2,
@@ -43,6 +44,15 @@ export default function AIPlanner({
   const [error, setError] =
     useState("");
 
+  const [appwriteId, setAppwriteId] = useState("");
+
+  useEffect(() => {
+    account
+      .get()
+      .then((u) => setAppwriteId(u.$id))
+      .catch((err) => console.error("AIPlanner: Failed to load user ID:", err));
+  }, []);
+
   async function generatePlan() {
     if (!event) return;
 
@@ -61,6 +71,7 @@ export default function AIPlanner({
           },
           body: JSON.stringify({
             event,
+            appwriteId,
           }),
         }
       );

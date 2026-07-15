@@ -4,7 +4,7 @@ import Container from "../common/Container";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white">
+    <footer className="border-t border-slate-200 bg-white text-slate-800">
       <Container>
         <div className="flex flex-col items-center justify-between gap-10 py-12 md:flex-row">
           {/* Brand */}
@@ -20,33 +20,33 @@ export default function Footer() {
           {/* Links */}
           <div className="flex gap-10 text-sm">
             <div className="space-y-3">
-              <h4 className="font-semibold">Product</h4>
+              <h4 className="font-semibold text-slate-900">Product</h4>
 
-              <Link href="/">Features</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Features</Link>
               <br />
-              <Link href="/">Pricing</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Pricing</Link>
               <br />
-              <Link href="/">Roadmap</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Roadmap</Link>
             </div>
 
             <div className="space-y-3">
-              <h4 className="font-semibold">Resources</h4>
+              <h4 className="font-semibold text-slate-900">Resources</h4>
 
-              <Link href="/">Documentation</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Documentation</Link>
               <br />
-              <Link href="/">Blog</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Blog</Link>
               <br />
-              <Link href="/">Support</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Support</Link>
             </div>
 
             <div className="space-y-3">
-              <h4 className="font-semibold">Company</h4>
+              <h4 className="font-semibold text-slate-900">Company</h4>
 
-              <Link href="/">About</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">About</Link>
               <br />
-              <Link href="/">Privacy</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Privacy</Link>
               <br />
-              <Link href="/">Terms</Link>
+              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Terms</Link>
             </div>
           </div>
         </div>

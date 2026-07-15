@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X, Minus, Maximize2, Send, Trash2, Loader2, Sparkles } from "lucide-react";
 import { useGmailStore } from "@/hooks/useGmail";
 import { sendEmail } from "@/lib/gmail";
+import { account } from "@/lib/appwrite";
 
 type ComposeWindowProps = {
   onSent?: () => void;
@@ -26,6 +27,14 @@ export default function ComposeWindow({ onSent }: ComposeWindowProps) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [appwriteId, setAppwriteId] = useState("");
+
+  useEffect(() => {
+    account
+      .get()
+      .then((u) => setAppwriteId(u.$id))
+      .catch((err) => console.error("ComposeWindow: Failed to load user ID:", err));
+  }, []);
 
   // Sync state with store values when compose window opens
   useEffect(() => {
@@ -80,6 +89,7 @@ export default function ComposeWindow({ onSent }: ComposeWindowProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: `Drafting new email. Recipient: ${to}. Subject: ${subject}. Content directive: ${body}`,
+          appwriteId,
         }),
       });
       const data = await response.json();
@@ -89,7 +99,7 @@ export default function ComposeWindow({ onSent }: ComposeWindowProps) {
       setBody(data.reply);
     } catch (err: any) {
       console.error(err);
-      setError("AI draft generation failed.");
+      setError(err.message || "AI draft generation failed.");
     } finally {
       setIsSending(false);
     }

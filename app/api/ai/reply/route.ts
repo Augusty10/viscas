@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-
-import { generateReply } from "@/lib/ai";
+import { generateReply, checkAILimit } from "@/lib/ai";
+import prisma from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-
-    const { email } = body;
+    const { email, appwriteId } = await request.json();
 
     if (!email) {
       return NextResponse.json(
@@ -20,7 +18,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check AI Limit
+    const limitCheck = await checkAILimit(appwriteId);
+    if (!limitCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: limitCheck.message,
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
     const reply = await generateReply(email);
+
+    // Save history
+    if (appwriteId) {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { appwriteId },
+        });
+        if (user) {
+          await prisma.aIHistory.create({
+            data: {
+              userId: user.id,
+              feature: "reply",
+              prompt: `Draft reply for email: ${email.substring(0, 100)}...`,
+              response: reply || "",
+            },
+          });
+        }
+      } catch (dbErr) {
+        console.error("Failed to log reply to database:", dbErr);
+      }
+    }
 
     return NextResponse.json({
       success: true,

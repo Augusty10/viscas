@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, FormEvent, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import GoogleButton from "@/components/auth/GoogleButton";
 import { signupWithEmail, loginWithEmail } from "@/lib/auth-client";
 import { Loader2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { account } from "@/lib/appwrite";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -25,13 +24,13 @@ function LoginForm() {
     async function checkSession() {
       try {
         await account.get();
-        router.push("/dashboard");
+        window.location.href = "/dashboard";
       } catch {
         // No session active, let user sign in
       }
     }
     checkSession();
-  }, [router]);
+  }, []);
 
   // Parse URL query errors (e.g. from OAuth failure redirects)
   useEffect(() => {
@@ -41,13 +40,19 @@ function LoginForm() {
         const decoded = decodeURIComponent(errorParam);
         const parsed = JSON.parse(decoded);
         if (parsed?.type === "user_already_exists" || parsed?.code === 409) {
-          setError("An account with this email address already exists. Please sign in instead.");
-          setIsSignUp(false); // Switch to Sign In tab automatically
+          setTimeout(() => {
+            setError("An account with this email address already exists. Please sign in instead.");
+            setIsSignUp(false); // Switch to Sign In tab automatically
+          }, 0);
         } else {
-          setError(parsed?.message || "Authentication failed.");
+          setTimeout(() => {
+            setError(parsed?.message || "Authentication failed.");
+          }, 0);
         }
       } catch {
-        setError(errorParam);
+        setTimeout(() => {
+          setError(errorParam);
+        }, 0);
       }
     }
   }, [searchParams]);
@@ -91,12 +96,29 @@ function LoginForm() {
         // Sign In
         await loginWithEmail(email, password);
       }
+
+      // Get fresh details and auto-sync user to PostgreSQL database
+      const u = await account.get();
+      try {
+        await fetch("/api/user/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            appwriteId: u.$id,
+            name: u.name,
+            email: u.email,
+            avatar: null,
+          }),
+        });
+      } catch (syncErr) {
+        console.warn("Failed to auto-sync user on sign-in:", syncErr);
+      }
       
-      // Redirect to dashboard
-      router.push("/dashboard");
-    } catch (err: any) {
+      // Redirect to dashboard with a full reload to verify session cookies
+      window.location.href = "/dashboard";
+    } catch (err: unknown) {
       console.error("Auth error:", err);
-      setError(err?.message || "Authentication failed. Please verify your credentials.");
+      setError((err as Error)?.message || "Authentication failed. Please verify your credentials.");
     } finally {
       setLoading(false);
     }

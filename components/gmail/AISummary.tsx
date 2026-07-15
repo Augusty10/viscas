@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { account } from "@/lib/appwrite";
 import {
   Sparkles,
   Loader2,
@@ -32,6 +33,15 @@ export default function AISummary({
   const [error, setError] =
     useState("");
 
+  const [appwriteId, setAppwriteId] = useState("");
+
+  useEffect(() => {
+    account
+      .get()
+      .then((u) => setAppwriteId(u.$id))
+      .catch((err) => console.error("AISummary: Failed to load user ID:", err));
+  }, []);
+
   async function generateSummary() {
     try {
       setLoading(true);
@@ -50,6 +60,7 @@ export default function AISummary({
 
           body: JSON.stringify({
             email,
+            appwriteId,
           }),
         }
       );

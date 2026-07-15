@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { useLayoutStore } from "@/hooks/useLayoutStore";
@@ -17,20 +16,34 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const { sidebarOpen, setSidebarOpen } = useLayoutStore();
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     async function verifySession() {
       try {
-        await account.get();
+        const u = await account.get();
+        // Auto-sync user details on dashboard load
+        try {
+          await fetch("/api/user/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              appwriteId: u.$id,
+              name: u.name,
+              email: u.email,
+              avatar: null,
+            }),
+          });
+        } catch (syncErr) {
+          console.warn("Failed to auto-sync user in DashboardLayout:", syncErr);
+        }
         setCheckingAuth(false);
       } catch (err) {
         console.warn("Guest user access blocked on dashboard:", err);
-        router.push("/login");
+        window.location.href = "/login";
       }
     }
     verifySession();
-  }, [router]);
+  }, []);
 
   if (checkingAuth) {
     return (
