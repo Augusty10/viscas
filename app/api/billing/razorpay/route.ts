@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     });
 
     const options = {
-      amount: 1900, // 19.00 INR (paise) or USD equivalent
+      amount: 299, // 2.99 INR (paise) or USD equivalent
       currency: "INR",
       receipt: `receipt_${user.id}_${Date.now()}`,
     };
