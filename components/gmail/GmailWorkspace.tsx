@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 
 import { useState, useEffect } from "react";
 
@@ -13,7 +15,6 @@ import ComposeWindow from "./ComposeWindow";
 import { useGmailStore } from "@/hooks/useGmail";
 
 import {
-  getInbox,
   getEmail,
   parseEmail,
   searchEmails,
@@ -43,8 +44,10 @@ export default function GmailWorkspace({ currentFolder = "inbox" }: GmailWorkspa
   useEffect(() => {
     const token = localStorage.getItem("google_access_token");
     if (token) {
-      setAccessToken(token);
-      setStoreAccessToken(token);
+      setTimeout(() => {
+        setAccessToken(token);
+        setStoreAccessToken(token);
+      }, 0);
 
       const loadInbox = async () => {
         try {
@@ -169,7 +172,7 @@ export default function GmailWorkspace({ currentFolder = "inbox" }: GmailWorkspa
           <aside className="col-span-3 space-y-6 overflow-y-auto">
             <AISummary email={selectedEmail?.body || selectedEmail?.snippet || ""}/>
             <SuggestedReplies email={selectedEmail} />
-            <EmailActions />
+            <EmailActions email={selectedEmail} />
           </aside>
         </div>
       </GmailLayout>

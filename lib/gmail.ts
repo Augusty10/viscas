@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function getInbox(accessToken: string) {
   const response = await fetch(
     "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=10",
@@ -30,6 +31,27 @@ export async function getEmail(
 
   if (!response.ok) {
     throw new Error("Failed to fetch email");
+  }
+
+  return response.json();
+}
+
+export async function getAttachment(
+  accessToken: string,
+  messageId: string,
+  attachmentId: string
+) {
+  const response = await fetch(
+    `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/attachments/${attachmentId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch attachment");
   }
 
   return response.json();
@@ -96,6 +118,33 @@ export function parseEmail(email: any) {
     body = email.snippet;
   }
 
+  // Parse attachments
+  const attachments: { filename: string; mimeType: string; attachmentId: string; size: number }[] = [];
+  if (email.payload.parts) {
+    email.payload.parts.forEach((part: any) => {
+      if (part.filename && part.body?.attachmentId) {
+        attachments.push({
+          filename: part.filename,
+          mimeType: part.mimeType,
+          attachmentId: part.body.attachmentId,
+          size: part.body.size || 0,
+        });
+      }
+      if (part.parts) {
+        part.parts.forEach((subPart: any) => {
+          if (subPart.filename && subPart.body?.attachmentId) {
+            attachments.push({
+              filename: subPart.filename,
+              mimeType: subPart.mimeType,
+              attachmentId: subPart.body.attachmentId,
+              size: subPart.body.size || 0,
+            });
+          }
+        });
+      }
+    });
+  }
+
   return {
     id: email.id,
     sender: getHeader("From"),
@@ -103,6 +152,7 @@ export function parseEmail(email: any) {
     snippet: email.snippet,
     body,
     date: getHeader("Date"),
+    attachments,
   };
 }
 export async function searchEmails(

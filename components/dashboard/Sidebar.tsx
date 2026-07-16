@@ -24,26 +24,31 @@ const menuItems = [
     title: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
+    shortcut: "Alt+1",
   },
   {
     title: "Gmail",
     href: "/dashboard/gmail",
     icon: Mail,
+    shortcut: "Alt+2",
   },
   {
     title: "Calendar",
     href: "/dashboard/calendar",
     icon: CalendarDays,
+    shortcut: "Alt+3",
   },
   {
     title: "AI Assistant",
     href: "/dashboard/ai",
     icon: Sparkles,
+    shortcut: "Alt+4",
   },
   {
     title: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
+    shortcut: "Alt+5",
   },
 ];
 
@@ -107,13 +112,20 @@ export default function Sidebar() {
               key={item.title}
               href={item.href}
               onClick={() => setSidebarOpen(false)}
-              className={`flex items-center rounded-xl transition-all duration-200 text-slate-700 hover:bg-sky-50 hover:text-sky-600 ${
-                isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3"
+              className={`flex items-center justify-between rounded-xl transition-all duration-200 text-slate-700 hover:bg-sky-50 hover:text-sky-600 ${
+                isCollapsed ? "p-3" : "px-4 py-3"
               }`}
-              title={isCollapsed ? item.title : undefined}
+              title={isCollapsed ? `${item.title} (${item.shortcut})` : undefined}
             >
-              <Icon className="h-5 w-5 shrink-0" />
-              {!isCollapsed && <span className="text-sm font-semibold truncate">{item.title}</span>}
+              <div className="flex items-center gap-3">
+                <Icon className="h-5 w-5 shrink-0" />
+                {!isCollapsed && <span className="text-sm font-semibold truncate">{item.title}</span>}
+              </div>
+              {!isCollapsed && (
+                <kbd className="px-1.5 py-0.5 text-[9px] font-bold bg-slate-100 border border-slate-200 rounded text-slate-400 font-mono shadow-sm">
+                  {item.shortcut}
+                </kbd>
+              )}
             </Link>
           );
         })}

@@ -22,7 +22,7 @@ type Event = {
   location: string;
   start: string;
   end: string;
-  attendees: any[];
+  attendees: unknown[];
   meetLink: string;
 };
 
@@ -44,16 +44,47 @@ export default function CalendarWorkspace() {
     async function loadEvents(token: string) {
       try {
         const result = await getEvents(token);
+        const items = result.items || [];
+        const parsed = items.map(parseEvent) as Event[];
 
-        const parsed = result.items.map(parseEvent);
+        const now = new Date();
+        const pastEvents = parsed.filter((event) => {
+          if (!event.end) return false;
+          const endTime = new Date(event.end);
+          return endTime < now;
+        });
 
-        setEvents(parsed);
+        if (pastEvents.length > 0) {
+          // Automatically delete past events from Google Calendar
+          await Promise.all(
+            pastEvents.map((event) =>
+              deleteEvent(token, event.id).catch((err) =>
+                console.error(`Failed to auto-delete past event ${event.title}:`, err)
+              )
+            )
+          );
 
-        if (parsed.length > 0) {
-          setSelectedEvent(parsed[0]);
+          // Re-fetch the clean current/upcoming events list
+          const updatedResult = await getEvents(token);
+          const updatedItems = updatedResult.items || [];
+          const updatedParsed = updatedItems.map(parseEvent) as Event[];
+          setEvents(updatedParsed);
+
+          if (updatedParsed.length > 0) {
+            setSelectedEvent(updatedParsed[0]);
+          } else {
+            setSelectedEvent(null);
+          }
+        } else {
+          setEvents(parsed);
+          if (parsed.length > 0) {
+            setSelectedEvent(parsed[0]);
+          } else {
+            setSelectedEvent(null);
+          }
         }
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load and clean calendar events:", err);
       }
     }
 
@@ -76,9 +107,9 @@ export default function CalendarWorkspace() {
       setIsPreviewOpen(false);
       setSelectedEvent(null);
       triggerRefresh();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(err.message || "Failed to delete event. Please try again.");
+      alert((err as Error).message || "Failed to delete event. Please try again.");
     }
   };
 
