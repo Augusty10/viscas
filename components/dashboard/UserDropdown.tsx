@@ -23,7 +23,22 @@ export default function UserDropdown() {
     async function loadUser() {
       try {
         const u = await account.get();
-        let avatarUrl: string | undefined = "/logo/dp.jpg";
+        let avatarUrl: string | undefined = undefined;
+
+        const token = localStorage.getItem("google_access_token");
+        if (token) {
+          try {
+            const res = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`);
+            if (res.ok) {
+              const googleUser = await res.json();
+              if (googleUser.picture) {
+                avatarUrl = googleUser.picture;
+              }
+            }
+          } catch (googleErr) {
+            console.warn("Failed to fetch Google profile picture:", googleErr);
+          }
+        }
 
         setUser({
           name: u.name || "User",
