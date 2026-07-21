@@ -23,6 +23,9 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Viscas",
   description: "The AI Workspace for Email & Calendar",
+  icons: {
+    icon: "/logo/logo.jpg",
+  },
 };
 
 export default function RootLayout({
