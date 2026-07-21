@@ -1,7 +1,5 @@
 import { Check } from "lucide-react";
 import Container from "../common/Container";
-import Section from "../common/Section";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const plans = [
@@ -11,7 +9,7 @@ const plans = [
     description: "Perfect for getting started.",
     popular: false,
     ctaText: "Get Started",
-    btnClass: "bg-slate-800 hover:bg-slate-900 text-white",
+    btnClass: "bg-pine-950 text-white hover:bg-forest-700",
     features: [
       "Gmail Integration",
       "Calendar Integration",
@@ -25,7 +23,7 @@ const plans = [
     description: "For professionals and creators.",
     popular: true,
     ctaText: "Upgrade to Pro",
-    btnClass: "bg-sky-500 hover:bg-sky-600 text-white shadow-lg shadow-sky-500/20",
+    btnClass: "bg-sky-500 text-pine-950 hover:scale-[1.01] hover:shadow-[0_10px_26px_rgba(56,189,248,0.4)]",
     features: [
       "Unlimited AI Requests",
       "Smart AI Email Reply Drafts",
@@ -40,87 +38,79 @@ const plans = [
     description: "Built for organization groups.",
     popular: false,
     ctaText: "Join Waitlist",
-    btnClass: "bg-slate-100 hover:bg-slate-200 text-slate-700",
+    btnClass: "bg-transparent text-forest-800 border border-line hover:border-forest-600 hover:text-forest-600",
     features: [
       "Team-wide Shared Workspace",
-      "Interactive Collaborative Calendars",
-      "Central Admin Control Panels",
-      "Custom Role Permission Management",
+      "Collaborative Calendars",
+      "Central Admin Control Panel",
+      "Custom Role Permissions",
     ],
   },
 ];
 
 export default function Pricing() {
   return (
-    <Section id="pricing" className="bg-slate-50/50">
+    <section className="bg-mist py-[110px] border-b border-line" id="pricing">
       <Container>
         {/* Header */}
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-500">
+        <div className="flex flex-col items-center text-center mx-auto max-w-3xl mb-16">
+          <span className="font-heading text-[12.5px] font-bold tracking-[0.14em] text-forest-600 uppercase">
             Pricing Plans
-          </p>
-
-          <h2
-            className="mt-4 text-4xl font-bold lg:text-5xl text-slate-900"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Simple & Transparent Pricing
+          </span>
+          <h2 className="font-heading mt-3 text-[38px] font-bold leading-tight tracking-tight text-ink sm:text-[44px]">
+            Simple &amp; transparent pricing
           </h2>
-
-          <p className="mt-6 text-lg text-slate-600">
-            Choose the plan that fits your productivity workflow.
+          <p className="mt-4 text-[16px] text-ink-soft">
+            Choose the plan that fits your productivity flow.
           </p>
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 justify-center items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch max-w-5xl mx-auto">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative flex flex-col justify-between rounded-3xl p-8 transition-all duration-300 hover:-translate-y-1 ${
+              className={`relative flex flex-col justify-between rounded-[20px] p-8 transition-all duration-300 border ${
                 plan.popular
-                  ? "bg-slate-900 text-white border border-slate-800 shadow-2xl lg:scale-[1.04]"
-                  : "bg-white border border-slate-200 text-slate-800 shadow-sm hover:shadow-xl"
+                  ? "bg-pine-950 text-white border-transparent shadow-[0_24px_50px_rgba(8,37,28,0.25)] md:scale-[1.03] z-10"
+                  : "bg-white border-line text-ink"
               }`}
             >
-              {/* Highlight decorations for Pro card */}
+              {/* Popular tag */}
               {plan.popular && (
-                <>
-                  <div className="absolute top-0 right-0 h-40 w-40 bg-sky-500/10 rounded-full blur-2xl pointer-events-none" />
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-sky-500 px-4 py-1 text-xs font-bold text-white uppercase tracking-wider shadow-md">
-                    Most Popular
-                  </span>
-                </>
+                <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-sky-500 text-pine-950 font-heading text-[11.5px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+                  Most Popular
+                </span>
               )}
 
-              {/* Upper Section */}
+              {/* Card Header & Content */}
               <div>
-                <h3 className="text-2xl font-bold tracking-tight">
+                <h3 className="font-heading text-[20px] font-bold mb-1.5">
                   {plan.name}
                 </h3>
-
-                <p className={`mt-2 text-sm leading-relaxed ${plan.popular ? "text-slate-400" : "text-slate-500"}`}>
+                <p className={`text-[13.5px] leading-relaxed mb-5 ${
+                  plan.popular ? "text-white/60" : "text-ink-soft"
+                }`}>
                   {plan.description}
                 </p>
 
-                <div className="mt-6 flex items-baseline">
-                  <span className="text-4xl font-extrabold tracking-tight">
-                    {plan.price}
-                  </span>
+                <div className="font-heading text-[38px] font-bold mb-5.5 flex items-baseline">
+                  {plan.price}
                   {plan.price !== "Coming Soon" && (
-                    <span className={`ml-1 text-sm ${plan.popular ? "text-slate-400" : "text-slate-500"}`}>
+                    <span className={`text-[14px] font-medium ml-1 ${
+                      plan.popular ? "text-white/60" : "text-ink-soft"
+                    }`}>
                       /month
                     </span>
                   )}
                 </div>
 
-                <div className="border-t border-slate-100 dark:border-slate-800 my-6" />
-
-                <ul className="space-y-4">
+                {/* Features List */}
+                <ul className="space-y-3.5 mb-8 border-t border-line/10 pt-5">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-sm">
-                      <Check className={`h-5 w-5 shrink-0 ${plan.popular ? "text-sky-400" : "text-green-500"}`} />
-                      <span className={plan.popular ? "text-slate-200 font-medium" : "text-slate-600 font-medium"}>
+                    <li key={feature} className="flex gap-2.5 items-start text-[14px]">
+                      <Check className="h-5.5 w-5.5 text-sky-500 shrink-0" />
+                      <span className={plan.popular ? "text-white/85 font-medium" : "text-ink/85 font-medium"}>
                         {feature}
                       </span>
                     </li>
@@ -129,15 +119,18 @@ export default function Pricing() {
               </div>
 
               {/* Action Button */}
-              <div className="mt-8">
-                <Button asChild className={`h-12 w-full rounded-2xl text-sm font-bold tracking-wide transition-all duration-200 ${plan.btnClass}`}>
-                  <Link href="/login">{plan.ctaText}</Link>
-                </Button>
+              <div>
+                <Link
+                  href="/login"
+                  className={`inline-flex h-12 w-full items-center justify-center rounded-full text-[14.5px] font-bold transition-all duration-200 cursor-pointer ${plan.btnClass}`}
+                >
+                  {plan.ctaText}
+                </Link>
               </div>
             </div>
           ))}
         </div>
       </Container>
-    </Section>
+    </section>
   );
 }

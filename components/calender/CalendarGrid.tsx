@@ -21,6 +21,7 @@ type CalendarEvent = {
   end: string;
   attendees: any[];
   meetLink: string;
+  eventType?: string;
 };
 
 type CalendarGridProps = {

@@ -2,10 +2,7 @@
 
 import Link from "next/link";
 import Logo from "../common/Logo";
-import { Button } from "@/components/ui/button";
-import Container from "../common/Container";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -19,10 +16,12 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-xl">
-      <Container className="flex h-[72px] items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-white/6 bg-pine-950/96 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl h-[72px] items-center justify-between px-6 lg:px-8">
         {/* Logo */}
-        <Logo />
+        <Link href="/">
+          <Logo />
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex">
@@ -30,7 +29,7 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-slate-700 transition-colors duration-300 hover:text-sky-500"
+              className="text-[14.5px] font-medium text-white/70 transition-colors duration-200 hover:text-white"
             >
               {link.name}
             </Link>
@@ -38,61 +37,76 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop Actions */}
-        <div className="hidden items-center gap-3 md:flex">
-          <Button asChild variant="ghost" className="rounded-xl">
-            <Link href="/login">Login</Link>
-          </Button>
+        <div className="hidden items-center gap-4.5 md:flex">
+          <Link href="/login" className="text-[14.5px] font-medium text-white/85 transition-colors hover:text-white">
+            Login
+          </Link>
 
-          <Button
-            asChild
-            className="rounded-xl bg-sky-500 px-5 hover:bg-sky-600 text-white font-medium"
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-5.5 py-2.5 text-[14.5px] font-bold text-pine-950 shadow-[0_6px_20px_rgba(56,189,248,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_26px_rgba(56,189,248,0.4)]"
           >
-            <Link href="/login">Get Started</Link>
-          </Button>
+            Get Started
+          </Link>
         </div>
 
         {/* Mobile Hamburger Button */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 hover:bg-slate-50 md:hidden transition"
-          title="Toggle Navigation Menu"
+          onClick={() => setIsOpen(true)}
+          className="flex h-[38px] w-[38px] flex-col items-center justify-center gap-1 rounded-[9px] border border-white/20 bg-transparent cursor-pointer md:hidden transition hover:bg-white/5"
+          title="Open Navigation Menu"
+          aria-label="Open menu"
         >
-          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          <span className="h-0.5 w-4 bg-white" />
+          <span className="h-0.5 w-4 bg-white" />
+          <span className="h-0.5 w-4 bg-white" />
         </button>
-      </Container>
+      </div>
 
-      {/* Mobile Drawer Dropdown */}
+      {/* Mobile Drawer Dropdown Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="border-b border-slate-200 bg-white md:hidden overflow-hidden"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "tween", duration: 0.3 }}
+            className="fixed inset-0 z-[60] flex flex-col bg-pine-950 px-8 py-[100px] md:hidden"
           >
-            <div className="flex flex-col gap-4 p-6">
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-6 right-7 bg-none border-none text-white text-3xl cursor-pointer"
+              aria-label="Close menu"
+            >
+              ×
+            </button>
+            <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-sm font-semibold text-slate-700 hover:text-sky-500 transition"
+                  className="text-[22px] font-semibold text-white py-4 border-b border-white/8 hover:text-sky-300 transition"
                 >
                   {link.name}
                 </Link>
               ))}
 
-              <div className="border-t border-slate-100 my-2" />
-
-              <div className="flex flex-col gap-3">
-                <Button asChild variant="outline" className="w-full rounded-xl">
-                  <Link href="/login" onClick={() => setIsOpen(false)}>Login</Link>
-                </Button>
-
-                <Button asChild className="w-full rounded-xl bg-sky-500 hover:bg-sky-600 text-white">
-                  <Link href="/login" onClick={() => setIsOpen(false)}>Get Started</Link>
-                </Button>
+              <div className="flex flex-col gap-4 mt-6">
+                <Link
+                  href="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="inline-flex items-center justify-center rounded-full border border-white/25 bg-transparent py-3 text-[16px] font-bold text-white transition hover:border-white/55"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="inline-flex items-center justify-center rounded-full bg-sky-500 py-3 text-[16px] font-bold text-pine-950 shadow-[0_6px_20px_rgba(56,189,248,0.28)] transition"
+                >
+                  Get Started
+                </Link>
               </div>
             </div>
           </motion.div>

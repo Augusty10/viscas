@@ -4,54 +4,93 @@ import Container from "../common/Container";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white text-slate-800">
+    <footer className="bg-pine-950 text-white/70 py-[70px] pb-[30px] border-t border-white/8">
       <Container>
-        <div className="flex flex-col items-center justify-between gap-10 py-12 md:flex-row">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 mb-[50px]">
           {/* Brand */}
-          <div>
-            <Logo />
-
-            <p className="mt-4 max-w-sm text-sm text-slate-600">
-              AI-powered productivity workspace that brings Gmail, Calendar,
-              and AI together in one place.
+          <div className="flex flex-col">
+            <Link href="/">
+              <Logo />
+            </Link>
+            <p className="mt-3.5 max-w-[280px] text-[14px] text-white/50 leading-relaxed">
+              An AI-powered productivity workspace that brings Gmail, Calendar, and AI together in one place.
             </p>
           </div>
 
-          {/* Links */}
-          <div className="flex gap-10 text-sm">
-            <div className="space-y-3">
-              <h4 className="font-semibold text-slate-900">Product</h4>
+          {/* Links 1 */}
+          <div className="flex flex-col">
+            <h5 className="text-white text-[13.5px] font-bold tracking-wider uppercase mb-4 font-heading">
+              Product
+            </h5>
+            <ul className="space-y-2 text-[13.5px]">
+              <li>
+                <Link href="#features" className="hover:text-sky-400 transition-colors duration-200">
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link href="#pricing" className="hover:text-sky-400 transition-colors duration-200">
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors duration-200">
+                  Roadmap
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Features</Link>
-              <br />
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Pricing</Link>
-              <br />
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Roadmap</Link>
-            </div>
+          {/* Links 2 */}
+          <div className="flex flex-col">
+            <h5 className="text-white text-[13.5px] font-bold tracking-wider uppercase mb-4 font-heading">
+              Resources
+            </h5>
+            <ul className="space-y-2 text-[13.5px]">
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors duration-200">
+                  Documentation
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors duration-200">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors duration-200">
+                  Support
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-            <div className="space-y-3">
-              <h4 className="font-semibold text-slate-900">Resources</h4>
-
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Documentation</Link>
-              <br />
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Blog</Link>
-              <br />
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Support</Link>
-            </div>
-
-            <div className="space-y-3">
-              <h4 className="font-semibold text-slate-900">Company</h4>
-
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">About</Link>
-              <br />
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Privacy</Link>
-              <br />
-              <Link href="/" className="text-slate-600 hover:text-sky-600 transition">Terms</Link>
-            </div>
+          {/* Links 3 */}
+          <div className="flex flex-col">
+            <h5 className="text-white text-[13.5px] font-bold tracking-wider uppercase mb-4 font-heading">
+              Company
+            </h5>
+            <ul className="space-y-2 text-[13.5px]">
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors duration-200">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors duration-200">
+                  Privacy
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-sky-400 transition-colors duration-200">
+                  Terms
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="border-t border-slate-200 py-6 text-center text-sm text-slate-500">
+        <div className="border-t border-white/8 pt-6 text-center text-[13px] text-white/40">
           © 2026 Viscas. All rights reserved.
         </div>
       </Container>

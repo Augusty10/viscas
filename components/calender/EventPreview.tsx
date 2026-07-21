@@ -51,12 +51,19 @@ export default function EventPreview({
       {/* Header */}
       <div className="border-b border-slate-200 p-6">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-2xl font-bold text-slate-800 break-words flex-1">
-            {event.title}
-          </h1>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl font-bold text-slate-800 break-words">
+              {event.title}
+            </h1>
+            {event.eventType === "birthday" && (
+              <span className="mt-1.5 inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-inset ring-amber-600/20">
+                Birthday (Read-only)
+              </span>
+            )}
+          </div>
 
           {/* Edit/Delete Actions */}
-          {(onEdit || onDelete) && (
+          {event.eventType !== "birthday" && (onEdit || onDelete) && (
             <div className="flex items-center gap-1.5 shrink-0">
               {onEdit && (
                 <button

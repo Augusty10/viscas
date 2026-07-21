@@ -1,74 +1,114 @@
 @import "tailwindcss";
 
 :root {
+  --pine-950: #08251C;
+  --forest-800: #0F3D2E;
+  --forest-700: #154A38;
+  --forest-600: #1C5A44;
+  --sky-500: #38BDF8;
+  --sky-400: #67CCFA;
+  --sky-300: #9FDEFB;
+  --sky-050: #EAF8FE;
+  --mist: #F4FAF9;
+  --white: #FFFFFF;
+  --ink: #0A1F1A;
+  --ink-soft: #4B655C;
+  --line: rgba(10, 31, 26, 0.09);
+  --radius: 16px;
 
   /* Brand */
-
   --primary: #38BDF8;
   --primary-hover: #0EA5E9;
   --primary-active: #0284C7;
-
   --success: #166534;
 
   /* Background */
-
   --background: #ffffff;
   --foreground: #0f172a;
 
   /* Text */
-
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
+  --text-primary: #0a1f1a;
+  --text-secondary: #4b655c;
   --text-muted: #94a3b8;
 
   /* Border */
-
-  --border: #e2e8f0;
+  --border: rgba(10, 31, 26, 0.09);
 
   /* Radius */
-
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
   --radius-xl: 24px;
 
   /* Shadow */
-
-  --shadow-card: 0 8px 30px rgba(15,23,42,.08);
+  --shadow-card: 0 8px 30px rgba(15, 23, 42, .08);
 
   /* Fonts */
-
-  --font-heading: var(--font-sora);
+  --font-heading: var(--font-space-grotesk);
   --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 .dark {
-
   --background: #0B1220;
   --foreground: #ffffff;
-
   --text-primary: #ffffff;
   --text-secondary: #CBD5E1;
   --border: #1E293B;
 }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+@theme {
+  --color-pine-950: var(--pine-950);
+  --color-forest-800: var(--forest-800);
+  --color-forest-700: var(--forest-700);
+  --color-forest-600: var(--forest-600);
+  --color-sky-500: var(--sky-500);
+  --color-sky-400: var(--sky-400);
+  --color-sky-300: var(--sky-300);
+  --color-sky-050: var(--sky-050);
+  --color-mist: var(--mist);
+  --color-white: var(--white);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+
+  --font-heading: var(--font-heading), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-mono: var(--font-mono), monospace;
+
+  --animate-spin-slow: spin 90s linear infinite;
+  --animate-spin-slow-rev: spin-rev 70s linear infinite;
+  --animate-float-chip: float-chip 4s ease-in-out infinite;
+  --animate-pulse-dot: pulse-dot 1.6s ease-in-out infinite;
 }
 
-html{
-  scroll-behavior:smooth;
+@keyframes spin-rev {
+  to { transform: rotate(-360deg); }
 }
 
-body{
+@keyframes float-chip {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
 
-  background:var(--background);
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
 
-  color:var(--text-primary);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  font-family:var(--font-body);
+html {
+  scroll-behavior: smooth;
+}
 
-  transition:.3s;
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  transition: .3s;
 }

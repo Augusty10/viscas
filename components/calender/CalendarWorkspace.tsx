@@ -24,6 +24,7 @@ type Event = {
   end: string;
   attendees: unknown[];
   meetLink: string;
+  eventType?: string;
 };
 
 export default function CalendarWorkspace() {
@@ -50,6 +51,7 @@ export default function CalendarWorkspace() {
         const now = new Date();
         const pastEvents = parsed.filter((event) => {
           if (!event.end) return false;
+          if (event.eventType === "birthday") return false;
           const endTime = new Date(event.end);
           return endTime < now;
         });

@@ -19,6 +19,7 @@ type Event = {
   end: string;
   attendees: any[];
   meetLink: string;
+  eventType?: string;
 };
 
 type PlannerResult = {

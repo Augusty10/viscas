@@ -30,6 +30,7 @@ export function parseEvent(event: any) {
       event.end?.date,
     attendees: event.attendees || [],
     meetLink: event.hangoutLink || "",
+    eventType: event.eventType || "default",
   };
 }
 
