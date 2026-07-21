@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function getEvents(accessToken: string) {
   const response = await fetch(
-    "https://www.googleapis.com/calendar/v3/calendars/primary/events?maxResults=20&singleEvents=true&orderBy=startTime",
+    "https://www.googleapis.com/calendar/v3/calendars/primary/events?maxResults=250&singleEvents=true&orderBy=startTime",
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
