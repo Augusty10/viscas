@@ -36,7 +36,7 @@ export default function SettingsWorkspace() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [appwriteId, setAppwriteId] = useState("");
-  const [googleAvatar, setGoogleAvatar] = useState<string | undefined>();
+  const [googleAvatar, setGoogleAvatar] = useState<string | undefined>("/logo/dp.jpg");
 
   // Password States
   const [currentPassword, setCurrentPassword] = useState("");
@@ -106,21 +106,8 @@ export default function SettingsWorkspace() {
         const savedCardNum = localStorage.getItem("viscas_card_number");
         if (savedCardNum) setCardNumber(savedCardNum);
 
-        // Load Google photo if active
-        const token = localStorage.getItem("google_access_token");
-        if (token) {
-          try {
-            const res = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`);
-            if (res.ok) {
-              const googleUser = await res.json();
-              if (googleUser.picture) {
-                setGoogleAvatar(googleUser.picture);
-              }
-            }
-          } catch (googleErr) {
-            console.warn("Failed to fetch Google picture:", googleErr);
-          }
-        }
+        // Load custom photo if active
+        setGoogleAvatar("/logo/dp.jpg");
       } catch (err) {
         console.error("Failed to load user in Settings", err);
       }
