@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import GmailSidebar from "@/components/gmail/GmailSidebar";
 import CalendarSidebar from "@/components/calender/CalendarSidebar";
 import { useLayoutStore } from "@/hooks/useLayoutStore";
-import { logout } from "@/lib/auth-client";
 import Logo from "../common/Logo";
 
 import {
@@ -14,7 +13,6 @@ import {
   CalendarDays,
   Sparkles,
   Settings,
-  LogOut,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -56,14 +54,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { sidebarOpen, setSidebarOpen, isCollapsed, toggleCollapsed } = useLayoutStore();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      window.location.href = "/login";
-    } catch (err) {
-      console.error("Failed to logout from sidebar", err);
-    }
-  };
+
 
   // Dynamic routing display
   if (pathname.startsWith("/dashboard/gmail")) {
@@ -131,19 +122,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Logout */}
-      <div className="border-t border-slate-200 p-4">
-        <button
-          onClick={handleLogout}
-          className={`flex items-center rounded-xl text-red-500 transition-all duration-200 hover:bg-red-50 ${
-            isCollapsed ? "justify-center p-3 w-full" : "gap-3 px-4 py-3 w-full"
-          }`}
-          title={isCollapsed ? "Logout" : undefined}
-        >
-          <LogOut className="h-5 w-5 shrink-0" />
-          {!isCollapsed && <span className="text-sm font-semibold truncate">Logout</span>}
-        </button>
-      </div>
+
     </aside>
   );
 }
