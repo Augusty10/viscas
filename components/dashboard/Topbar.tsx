@@ -12,7 +12,7 @@ export default function Topbar() {
   const { toggleSidebar } = useLayoutStore();
 
   return (
-    <header className="flex h-20 items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 sm:px-8">
+    <header className="relative z-30 flex h-20 items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 sm:px-8">
       {/* Mobile Hamburger Menu */}
       <button
         onClick={toggleSidebar}

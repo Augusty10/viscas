@@ -111,7 +111,7 @@ export default function UserDropdown() {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+        <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl z-50">
           {/* User Info */}
           <div className="border-b border-slate-100 p-4">
             <p className="font-semibold">
