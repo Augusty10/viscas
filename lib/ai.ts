@@ -34,17 +34,32 @@ async function generate(prompt: string) {
   }
 }
 
+function cleanJSONString(str: string): string {
+  if (!str) return "";
+  let cleaned = str.trim();
+  if (cleaned.startsWith("```json")) {
+    cleaned = cleaned.substring(7);
+  } else if (cleaned.startsWith("```")) {
+    cleaned = cleaned.substring(3);
+  }
+  if (cleaned.endsWith("```")) {
+    cleaned = cleaned.substring(0, cleaned.length - 3);
+  }
+  return cleaned.trim();
+}
+
 /**
  * Email Summary
  */
 export async function generateSummary(email: string) {
-  return generate(`
+  const res = await generate(`
 ${SUMMARY_PROMPT}
 
 EMAIL:
 
 ${email}
 `);
+  return cleanJSONString(res);
 }
 
 /**
@@ -64,13 +79,14 @@ ${email}
  * Meeting Planner
  */
 export async function generateMeetingPlan(event: string) {
-  return generate(`
+  const res = await generate(`
 ${MEETING_PROMPT}
 
 MEETING:
 
 ${event}
 `);
+  return cleanJSONString(res);
 }
 
 /**
