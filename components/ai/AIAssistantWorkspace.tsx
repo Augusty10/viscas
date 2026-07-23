@@ -122,7 +122,7 @@ export default function AIAssistantWorkspace() {
           ...prev,
           {
             role: "assistant",
-            content: "Sorry, I encountered an issue generating a response. Please try again.",
+            content: data.message || "Sorry, I encountered an issue generating a response. Please try again.",
             timestamp: new Date(),
           },
         ]);

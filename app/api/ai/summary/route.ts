@@ -59,13 +59,23 @@ export async function POST(request: NextRequest) {
       success: true,
       summary,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("AI Summary Error:", error);
+
+    let message = "Failed to generate summary.";
+    const errMsg = error?.message || "";
+    if (
+      errMsg.includes("paused") ||
+      errMsg.includes("inactivity") ||
+      errMsg.includes("restore")
+    ) {
+      message = errMsg;
+    }
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to generate summary.",
+        message,
       },
       {
         status: 500,

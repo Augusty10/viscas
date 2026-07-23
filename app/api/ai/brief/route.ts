@@ -47,13 +47,23 @@ export async function POST(request: NextRequest) {
       success: true,
       brief,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("AI Brief Error:", error);
+
+    let message = "Failed to generate daily brief.";
+    const errMsg = error?.message || "";
+    if (
+      errMsg.includes("paused") ||
+      errMsg.includes("inactivity") ||
+      errMsg.includes("restore")
+    ) {
+      message = errMsg;
+    }
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to generate daily brief.",
+        message,
       },
       {
         status: 500,

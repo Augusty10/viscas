@@ -161,8 +161,15 @@ export async function checkAILimit(appwriteId?: string): Promise<{ allowed: bool
     }
 
     return { allowed: true, count, plan };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in checkAILimit:", error);
+    const errorStr = String(error?.message || error || "");
+    if (
+      errorStr.includes("paused due to inactivity") ||
+      errorStr.includes("restore it from the console")
+    ) {
+      throw new Error("Project is paused due to inactivity. Please restore it from the console to resume operations.");
+    }
     // Graceful fallback to allow request if DB query fails to prevent breaking app
     return { allowed: true, count: 0, plan: "FREE" };
   }

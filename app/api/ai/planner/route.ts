@@ -83,13 +83,23 @@ ${event.meetLink || "N/A"}
       success: true,
       plan,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("AI Planner Error:", error);
+
+    let message = "Failed to generate meeting plan.";
+    const errMsg = error?.message || "";
+    if (
+      errMsg.includes("paused") ||
+      errMsg.includes("inactivity") ||
+      errMsg.includes("restore")
+    ) {
+      message = errMsg;
+    }
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to generate meeting plan.",
+        message,
       },
       {
         status: 500,

@@ -59,13 +59,23 @@ export async function POST(request: NextRequest) {
       success: true,
       reply,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("AI Reply Error:", error);
+
+    let message = "Failed to generate AI reply.";
+    const errMsg = error?.message || "";
+    if (
+      errMsg.includes("paused") ||
+      errMsg.includes("inactivity") ||
+      errMsg.includes("restore")
+    ) {
+      message = errMsg;
+    }
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to generate AI reply.",
+        message,
       },
       {
         status: 500,
