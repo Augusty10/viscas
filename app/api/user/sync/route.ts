@@ -35,13 +35,23 @@ export async function POST(request: NextRequest) {
       success: true,
       user,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("User sync error:", error);
+
+    let errorMessage = "Failed to sync user.";
+    const errorStr = String(error?.message || error || "");
+
+    if (
+      errorStr.includes("paused due to inactivity") ||
+      errorStr.includes("restore it from the console")
+    ) {
+      errorMessage = "Project is paused due to inactivity. Please restore it from the console to resume operations.";
+    }
 
     return NextResponse.json(
       {
         success: false,
-        error: "Failed to sync user.",
+        error: errorMessage,
       },
       {
         status: 500,

@@ -22,6 +22,16 @@ function LoginForm() {
   // Check if session is already active on mount and redirect to dashboard
   useEffect(() => {
     async function checkSession() {
+      const errorParam = searchParams.get("error");
+      if (
+        errorParam &&
+        (errorParam.includes("paused") ||
+          errorParam.includes("inactivity") ||
+          errorParam.includes("restore"))
+      ) {
+        return;
+      }
+
       try {
         await account.get();
         window.location.href = "/dashboard";
@@ -30,7 +40,7 @@ function LoginForm() {
       }
     }
     checkSession();
-  }, []);
+  }, [searchParams]);
 
   // Parse URL query errors (e.g. from OAuth failure redirects)
   useEffect(() => {
@@ -100,7 +110,7 @@ function LoginForm() {
       // Get fresh details and auto-sync user to PostgreSQL database
       const u = await account.get();
       try {
-        await fetch("/api/user/sync", {
+        const response = await fetch("/api/user/sync", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -110,8 +120,20 @@ function LoginForm() {
             avatar: null,
           }),
         });
-      } catch (syncErr) {
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || "Failed to sync user.");
+        }
+      } catch (syncErr: any) {
         console.warn("Failed to auto-sync user on sign-in:", syncErr);
+        const errMsg = syncErr?.message || "";
+        if (
+          errMsg.includes("paused") ||
+          errMsg.includes("inactivity") ||
+          errMsg.includes("restore")
+        ) {
+          throw syncErr;
+        }
       }
       
       // Redirect to dashboard with a full reload to verify session cookies

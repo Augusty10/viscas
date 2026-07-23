@@ -26,7 +26,7 @@ export default function DashboardLayout({
         const u = await account.get();
         // Auto-sync user details on dashboard load
         try {
-          await fetch("/api/user/sync", {
+          const res = await fetch("/api/user/sync", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -36,6 +36,18 @@ export default function DashboardLayout({
               avatar: null,
             }),
           });
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            const errMsg = data.error || "Failed to sync user.";
+            if (
+              errMsg.includes("paused") ||
+              errMsg.includes("inactivity") ||
+              errMsg.includes("restore")
+            ) {
+              window.location.href = `/login?error=${encodeURIComponent(errMsg)}`;
+              return;
+            }
+          }
         } catch (syncErr) {
           console.warn("Failed to auto-sync user in DashboardLayout:", syncErr);
         }
