@@ -288,6 +288,10 @@ export default function SettingsWorkspace() {
         },
       };
 
+      if (!(window as any).Razorpay) {
+        throw new Error("Razorpay SDK is not loaded. If you are using an ad-blocker or Brave Browser, please disable shields/adblocker for this site and refresh.");
+      }
+
       const rzp = new (window as unknown as { Razorpay: new (opts: unknown) => { open: () => void } }).Razorpay(options);
       rzp.open();
     } catch (err: unknown) {
