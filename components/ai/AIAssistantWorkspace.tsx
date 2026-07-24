@@ -92,6 +92,8 @@ export default function AIAssistantWorkspace() {
         content: m.content,
       }));
 
+      const googleAccessToken = typeof window !== "undefined" ? localStorage.getItem("google_access_token") : null;
+
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: {
@@ -103,6 +105,7 @@ export default function AIAssistantWorkspace() {
           emails: recentEmails,
           calendar: todayEvents,
           appwriteId,
+          googleAccessToken,
         }),
       });
 

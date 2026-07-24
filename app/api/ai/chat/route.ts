@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, history = [], emails = [], calendar = [], appwriteId } = await request.json();
+    const { message, history = [], emails = [], calendar = [], appwriteId, googleAccessToken } = await request.json();
 
     if (!message) {
       return NextResponse.json(
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const reply = await generateChatResponse(message, history, emails, calendar);
+    const reply = await generateChatResponse(message, history, emails, calendar, googleAccessToken);
 
     // Persist to AI History if user is authenticated and synced
     if (appwriteId) {

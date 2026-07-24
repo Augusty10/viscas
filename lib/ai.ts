@@ -1,5 +1,7 @@
 import OpenAI from "openai";
 import prisma from "@/lib/prisma";
+import { sendEmail } from "./gmail";
+import { createEvent } from "./calendar";
 
 import {
   SUMMARY_PROMPT,
@@ -116,30 +118,176 @@ export async function generateChatResponse(
   message: string,
   history: { role: "user" | "assistant"; content: string }[],
   emails: any[],
-  calendar: any[]
+  calendar: any[],
+  googleAccessToken?: string | null
 ) {
-  const formattedHistory = history
-    .map((msg) => `${msg.role.toUpperCase()}: ${msg.content}`)
-    .join("\n\n");
-
-  const prompt = `
-${CHAT_ASSISTANT_PROMPT}
+  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    {
+      role: "system",
+      content: `${CHAT_ASSISTANT_PROMPT}
+      
+Current local time is: ${new Date().toISOString()}
 
 WORKSPACE CONTEXT:
 EMAILS:
 ${JSON.stringify(emails, null, 2)}
 
 CALENDAR EVENTS:
-${JSON.stringify(calendar, null, 2)}
+${JSON.stringify(calendar, null, 2)}`,
+    },
+  ];
 
-CONVERSATION HISTORY:
-${formattedHistory}
+  // Add conversation history
+  for (const msg of history) {
+    const role = msg.role === "user" ? "user" : "assistant";
+    messages.push({
+      role,
+      content: msg.content,
+    });
+  }
 
-USER MESSAGE:
-${message}
-`;
+  // Add user message
+  messages.push({
+    role: "user",
+    content: message,
+  });
 
-  return generate(prompt);
+  const tools: OpenAI.Chat.ChatCompletionTool[] = [
+    {
+      type: "function",
+      function: {
+        name: "send_email",
+        description: "Send an email to a recipient.",
+        parameters: {
+          type: "object",
+          properties: {
+            to: {
+              type: "string",
+              description: "The recipient's email address.",
+            },
+            subject: {
+              type: "string",
+              description: "The email subject line.",
+            },
+            body: {
+              type: "string",
+              description: "The body of the email in plain text.",
+            },
+          },
+          required: ["to", "subject", "body"],
+        },
+      },
+    },
+    {
+      type: "function",
+      function: {
+        name: "create_calendar_event",
+        description: "Schedule/create a new calendar event or meeting.",
+        parameters: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+              description: "The title of the meeting or event.",
+            },
+            description: {
+              type: "string",
+              description: "The description of the meeting or event.",
+            },
+            location: {
+              type: "string",
+              description: "The location (physical address or link) for the meeting.",
+            },
+            start: {
+              type: "string",
+              description: "The start date and time of the event (ISO 8601 string, e.g. '2026-07-25T14:00:00+05:30').",
+            },
+            end: {
+              type: "string",
+              description: "The end date and time of the event (ISO 8601 string, e.g. '2026-07-25T15:00:00+05:30').",
+            },
+            attendees: {
+              type: "array",
+              items: {
+                type: "string",
+              },
+              description: "List of attendee email addresses.",
+            },
+            createMeetLink: {
+              type: "boolean",
+              description: "Whether to create a Google Meet conference link for this event.",
+            },
+          },
+          required: ["title", "start", "end"],
+        },
+      },
+    },
+  ];
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: MODEL,
+      messages,
+      tools,
+      tool_choice: "auto",
+    });
+
+    const responseMessage = response.choices[0].message;
+
+    if (responseMessage.tool_calls && responseMessage.tool_calls.length > 0) {
+      messages.push(responseMessage);
+
+      for (const toolCall of responseMessage.tool_calls) {
+        if (toolCall.type !== "function") continue;
+        const functionName = toolCall.function.name;
+        const functionArgs = JSON.parse(toolCall.function.arguments);
+
+        let toolResult = "";
+        try {
+          if (!googleAccessToken) {
+            toolResult = "Error: Google Account is not connected. Tell the user to connect their Google Account to send emails or schedule calendar events.";
+          } else if (functionName === "send_email") {
+            const { to, subject, body } = functionArgs;
+            await sendEmail(googleAccessToken, to, subject, body);
+            toolResult = `Successfully sent email to ${to} with subject "${subject}".`;
+          } else if (functionName === "create_calendar_event") {
+            const { title, description, location, start, end, attendees, createMeetLink } = functionArgs;
+            const event = await createEvent(googleAccessToken, {
+              title,
+              description,
+              location,
+              start,
+              end,
+              attendees,
+              createMeetLink,
+            });
+            toolResult = `Successfully scheduled calendar event: "${title}" starting at ${start} and ending at ${end}. Event ID: ${event.id}.`;
+          }
+        } catch (error: any) {
+          console.error(`Error executing tool ${functionName}:`, error);
+          toolResult = `Error executing action: ${error.message || error}`;
+        }
+
+        messages.push({
+          role: "tool",
+          tool_call_id: toolCall.id,
+          content: toolResult,
+        } as any);
+      }
+
+      const secondResponse = await openai.chat.completions.create({
+        model: MODEL,
+        messages,
+      });
+
+      return secondResponse.choices[0].message.content;
+    }
+
+    return responseMessage.content;
+  } catch (error) {
+    console.error("OpenAI Chat Assistant Error:", error);
+    throw new Error("Failed to generate AI response.");
+  }
 }
 
 /**

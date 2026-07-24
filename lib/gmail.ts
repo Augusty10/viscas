@@ -87,11 +87,21 @@ export function parseEmail(email: any) {
     const base64 = data.replace(/-/g, "+").replace(/_/g, "/");
 
     try {
-      return decodeURIComponent(
-        escape(window.atob(base64))
-      );
+      if (typeof window !== "undefined") {
+        return decodeURIComponent(
+          escape(window.atob(base64))
+        );
+      } else {
+        return decodeURIComponent(
+          escape(Buffer.from(base64, "base64").toString("binary"))
+        );
+      }
     } catch {
-      return window.atob(base64);
+      if (typeof window !== "undefined") {
+        return window.atob(base64);
+      } else {
+        return Buffer.from(base64, "base64").toString("binary");
+      }
     }
   }
 
