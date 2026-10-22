@@ -7,7 +7,6 @@ import {
   Smartphone,
 } from "lucide-react";
 import Container from "../common/Container";
-import { Card } from "@/components/ui/card";
 
 const features = [
   {
@@ -44,43 +43,43 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="bg-white py-20 lg:py-28 border-b border-slate-200" id="features">
+    <section className="bg-white py-18 sm:py-20 lg:py-24 border-b border-slate-200/80" id="features">
       <Container>
         {/* Section Heading */}
-        <div className="flex flex-col items-center text-center mx-auto max-w-3xl mb-16">
-          <span className="text-xs font-bold tracking-widest text-sky-600 uppercase">
+        <div className="flex flex-col items-center text-center mx-auto max-w-2xl mb-12 sm:mb-16">
+          <span className="text-xs font-bold tracking-widest text-sky-600 uppercase mb-2">
             Features
           </span>
-          <h2 className="font-heading mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-slate-900">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-slate-900">
             Everything you need to stay productive
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 font-medium max-w-2xl">
+          <p className="mt-4 text-base sm:text-lg text-slate-600 font-normal">
             Viscas combines AI, Gmail, Calendar, and modern productivity tools into one intelligent workspace.
           </p>
         </div>
 
-        {/* Feature Cards Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Feature Cards Grid: 1 col on mobile, 2 col on tablet, 3 col on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
           {features.map((feat) => {
             const Icon = feat.icon;
 
             return (
-              <Card
+              <div
                 key={feat.title}
-                className="group flex flex-col h-full rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
+                className="group flex flex-col h-full rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 lg:p-8 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-50 text-sky-600 border border-sky-100 mb-5 transition-colors duration-200 group-hover:bg-sky-600 group-hover:text-white group-hover:border-transparent shrink-0">
                   <Icon className="h-6 w-6" />
                 </div>
 
-                <h3 className="font-heading text-lg sm:text-xl font-bold text-slate-900 mb-2">
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-slate-900 mb-2.5">
                   {feat.title}
                 </h3>
 
                 <p className="text-sm text-slate-600 leading-relaxed font-normal flex-1">
                   {feat.description}
                 </p>
-              </Card>
+              </div>
             );
           })}
         </div>

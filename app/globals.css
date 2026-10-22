@@ -229,6 +229,17 @@
   --font-body: var(--font-body), sans-serif;
   --font-mono: var(--font-mono), monospace;
 
+  --container-7xl: 80rem;
+  --container-6xl: 72rem;
+  --container-5xl: 64rem;
+  --container-4xl: 56rem;
+  --container-3xl: 48rem;
+  --container-2xl: 42rem;
+  --container-xl: 36rem;
+  --container-lg: 32rem;
+  --container-md: 28rem;
+  --container-sm: 24rem;
+
   --animate-spin-slow: spin 90s linear infinite;
   --animate-spin-slow-rev: spin-rev 70s linear infinite;
   --animate-float-chip: float-chip 4s ease-in-out infinite;
@@ -258,6 +269,7 @@
 html,
 body {
   max-width: 100%;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 

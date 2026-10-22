@@ -5,9 +5,9 @@ import { Play } from "lucide-react";
 
 function GrowthRings() {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden z-0 opacity-30 select-none">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden z-0 opacity-25 select-none">
       <svg
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] max-w-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] lg:w-[560px] lg:h-[560px] max-w-none"
         viewBox="0 0 640 640"
         aria-hidden="true"
       >
@@ -47,10 +47,10 @@ export default function CtaBand() {
 
           {/* Content */}
           <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
-            <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight mb-4 text-white leading-tight">
+            <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white leading-tight">
               Ready to reclaim your inbox?
             </h2>
-            <p className="text-base text-white/85 leading-relaxed mb-8 max-w-xl font-normal">
+            <p className="text-base sm:text-lg text-white/85 leading-relaxed mb-8 max-w-xl font-normal">
               Start free — upgrade only when the AI is doing work you&apos;d rather not do yourself.
             </p>
 
@@ -59,7 +59,7 @@ export default function CtaBand() {
                 asChild
                 size="lg"
                 variant="default"
-                className="w-full sm:w-auto font-bold shadow-md bg-sky-500 hover:bg-sky-400 text-pine-950"
+                className="w-full sm:w-auto font-bold shadow-md bg-sky-500 hover:bg-sky-400 text-pine-950 h-12 px-7 rounded-xl text-base"
               >
                 <Link href="/login">Get Started Free</Link>
               </Button>
@@ -67,7 +67,7 @@ export default function CtaBand() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto border-white/25 bg-white/5 text-white hover:bg-white/10 shadow-xs"
+                className="w-full sm:w-auto border-white/25 bg-white/5 text-white hover:bg-white/10 shadow-xs h-12 px-7 rounded-xl text-base"
               >
                 <Link href="/login" className="flex items-center justify-center gap-2">
                   <Play className="h-4 w-4 fill-white" />

@@ -4,17 +4,22 @@ import Container from "../common/Container";
 
 export default function Footer() {
   return (
-    <footer className="bg-pine-950 text-white/80 py-14 sm:py-16 md:py-20 pb-8 border-t border-white/10">
+    <footer className="bg-pine-950 text-white/80 pt-16 pb-10 border-t border-white/10">
       <Container>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8 sm:gap-10 mb-12">
-          {/* Brand info */}
-          <div className="flex flex-col">
-            <Link href="/" className="inline-block transition-opacity hover:opacity-90">
+        {/* Multi-column grid: 1 col on mobile, 2 col on tablet, 5 cols on desktop (2+1+1+1) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-12 mb-14">
+          {/* Brand Column (spans 2 on desktop) */}
+          <div className="flex flex-col sm:col-span-2 lg:col-span-2">
+            <Link href="/" className="inline-block transition-opacity hover:opacity-90 w-fit">
               <Logo />
             </Link>
             <p className="mt-4 max-w-sm text-sm text-white/75 leading-relaxed font-normal">
-              An AI-powered productivity workspace that unifies Gmail, Calendar, and an AI co-pilot into one calm dashboard.
+              An AI-powered productivity workspace that unifies Gmail, Google Calendar, and an AI co-pilot into one calm dashboard.
             </p>
+            <div className="inline-flex items-center gap-2 mt-5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/80 w-fit">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span>All systems operational</span>
+            </div>
           </div>
 
           {/* Links 1: Product */}
@@ -64,7 +69,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/login" className="text-white/75 hover:text-white transition-colors duration-200">
-                  Support
+                  Help &amp; Support
                 </Link>
               </li>
             </ul>
@@ -95,7 +100,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom copyright line */}
+        {/* Bottom copyright & attribution bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/70 text-center sm:text-left">
           <p>© 2026 Viscas. All rights reserved.</p>
           <p className="text-white/60">Designed for calm email &amp; calendar focus.</p>
