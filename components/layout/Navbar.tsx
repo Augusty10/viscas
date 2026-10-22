@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import Logo from "../common/Logo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,11 +17,28 @@ export default function Navbar() {
     { name: "FAQ", href: "/#faq" },
   ];
 
+  // Close mobile drawer on Escape key and prevent background scroll
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/6 bg-pine-950/96 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl h-[72px] items-center justify-between px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-pine-950/95 backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl h-18 items-center justify-between px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/">
+        <Link href="/" className="transition-opacity hover:opacity-90">
           <Logo />
         </Link>
 
@@ -29,7 +48,7 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-[14.5px] font-medium text-white/70 transition-colors duration-200 hover:text-white"
+              className="text-sm font-medium text-white/80 transition-colors duration-200 hover:text-white"
             >
               {link.name}
             </Link>
@@ -37,29 +56,28 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop Actions */}
-        <div className="hidden items-center gap-4.5 md:flex">
-          <Link href="/login" className="text-[14.5px] font-medium text-white/85 transition-colors hover:text-white">
+        <div className="hidden items-center gap-4 md:flex">
+          <Link
+            href="/login"
+            className="text-sm font-medium text-white/85 transition-colors hover:text-white px-3 py-2"
+          >
             Login
           </Link>
 
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-5.5 py-2.5 text-[14.5px] font-bold text-pine-950 shadow-[0_6px_20px_rgba(56,189,248,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_26px_rgba(56,189,248,0.4)]"
-          >
-            Get Started
-          </Link>
+          <Button asChild size="default" variant="default" className="shadow-xs font-bold">
+            <Link href="/login">Get Started</Link>
+          </Button>
         </div>
 
-        {/* Mobile Hamburger Button */}
+        {/* Mobile Hamburger Button (Accessible 44x44px target) */}
         <button
           onClick={() => setIsOpen(true)}
-          className="flex h-[38px] w-[38px] flex-col items-center justify-center gap-1 rounded-[9px] border border-white/20 bg-transparent cursor-pointer md:hidden transition hover:bg-white/5"
+          className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-white/5 text-white cursor-pointer md:hidden transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
           title="Open Navigation Menu"
-          aria-label="Open menu"
+          aria-label="Open navigation menu"
+          aria-expanded={isOpen}
         >
-          <span className="h-0.5 w-4 bg-white" />
-          <span className="h-0.5 w-4 bg-white" />
-          <span className="h-0.5 w-4 bg-white" />
+          <Menu className="h-5 w-5" />
         </button>
       </div>
 
@@ -67,46 +85,53 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "tween", duration: 0.3 }}
-            className="fixed inset-0 z-[60] flex flex-col bg-pine-950 px-8 py-[100px] md:hidden"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "tween", duration: 0.25 }}
+            className="fixed inset-0 z-[60] flex flex-col bg-pine-950 px-6 py-8 md:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile Navigation Menu"
           >
-            <button
-              onClick={() => setIsOpen(false)}
-              className="absolute top-6 right-7 bg-none border-none text-white text-3xl cursor-pointer"
-              aria-label="Close menu"
-            >
-              ×
-            </button>
-            <div className="flex flex-col gap-4">
+            {/* Top Bar with Logo & Close Button */}
+            <div className="flex items-center justify-between border-b border-white/10 pb-5">
+              <Link href="/" onClick={() => setIsOpen(false)}>
+                <Logo />
+              </Link>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-white/5 text-white cursor-pointer hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+                aria-label="Close menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Nav Links */}
+            <div className="flex flex-col gap-2 mt-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-[22px] font-semibold text-white py-4 border-b border-white/8 hover:text-sky-300 transition"
+                  className="text-lg font-semibold text-white/90 py-3.5 px-2 rounded-lg hover:bg-white/5 hover:text-white transition-colors"
                 >
                   {link.name}
                 </Link>
               ))}
 
-              <div className="flex flex-col gap-4 mt-6">
-                <Link
-                  href="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="inline-flex items-center justify-center rounded-full border border-white/25 bg-transparent py-3 text-[16px] font-bold text-white transition hover:border-white/55"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="inline-flex items-center justify-center rounded-full bg-sky-500 py-3 text-[16px] font-bold text-pine-950 shadow-[0_6px_20px_rgba(56,189,248,0.28)] transition"
-                >
-                  Get Started
-                </Link>
+              <div className="flex flex-col gap-3 mt-8 border-t border-white/10 pt-6">
+                <Button asChild variant="outline" size="lg" fullWidth className="border-white/20 bg-transparent text-white hover:bg-white/10">
+                  <Link href="/login" onClick={() => setIsOpen(false)}>
+                    Login
+                  </Link>
+                </Button>
+                <Button asChild variant="default" size="lg" fullWidth className="font-bold">
+                  <Link href="/login" onClick={() => setIsOpen(false)}>
+                    Get Started Free
+                  </Link>
+                </Button>
               </div>
             </div>
           </motion.div>

@@ -8,17 +8,18 @@ import Footer from "@/components/landing/Footer";
 
 export default function Home() {
   return (
-    <>
+    <div className="flex min-h-screen flex-col overflow-x-hidden">
       <Navbar />
 
-      <main>
+      <main className="flex-1 overflow-x-hidden">
         <Hero />
         <Steps />
         <Features />
         <Pricing />
         <FAQ />
-        <Footer />
       </main>
-    </>
+
+      <Footer />
+    </div>
   );
 }

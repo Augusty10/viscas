@@ -7,6 +7,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import Container from "../common/Container";
+import { Card } from "@/components/ui/card";
 
 const features = [
   {
@@ -43,43 +44,43 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="bg-white py-[110px] border-b border-line" id="features">
+    <section className="bg-white py-20 lg:py-28 border-b border-slate-200" id="features">
       <Container>
-        {/* Heading */}
-        <div className="flex flex-col items-center text-center mx-auto max-w-3xl mb-14">
-          <span className="font-heading text-[12.5px] font-bold tracking-[0.14em] text-forest-600 uppercase">
+        {/* Section Heading */}
+        <div className="flex flex-col items-center text-center mx-auto max-w-3xl mb-16">
+          <span className="text-xs font-bold tracking-widest text-sky-600 uppercase">
             Features
           </span>
-          <h2 className="font-heading mt-3 text-[38px] font-bold leading-tight tracking-tight text-ink sm:text-[44px]">
+          <h2 className="font-heading mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-slate-900">
             Everything you need to stay productive
           </h2>
-          <p className="mt-4 text-[16px] text-ink-soft">
+          <p className="mt-4 text-base sm:text-lg text-slate-600 font-medium max-w-2xl">
             Viscas combines AI, Gmail, Calendar, and modern productivity tools into one intelligent workspace.
           </p>
         </div>
 
-        {/* Feature Grid */}
-        <div className="grid gap-5.5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Feature Cards Grid */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feat) => {
             const Icon = feat.icon;
 
             return (
-              <div
+              <Card
                 key={feat.title}
-                className="group border border-line rounded-[16px] p-7 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-[0_16px_32px_rgba(15,61,46,0.1)] text-ink"
+                className="group border border-slate-200 bg-white p-7 transition-all duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-lg"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-[11px] bg-forest-800 text-sky-300 mb-[18px] transition-colors duration-300 group-hover:bg-sky-500 group-hover:text-pine-950">
-                  <Icon className="h-5 w-5" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-50 text-sky-600 border border-sky-100 mb-5 transition-colors duration-200 group-hover:bg-sky-600 group-hover:text-white group-hover:border-transparent">
+                  <Icon className="h-6 w-6" />
                 </div>
 
-                <h3 className="font-heading text-[17.5px] font-bold mb-2">
+                <h3 className="font-heading text-lg font-bold text-slate-900 mb-2">
                   {feat.title}
                 </h3>
 
-                <p className="text-[14.5px] text-ink-soft leading-relaxed font-medium">
+                <p className="text-sm text-slate-600 leading-relaxed font-normal">
                   {feat.description}
                 </p>
-              </div>
+              </Card>
             );
           })}
         </div>

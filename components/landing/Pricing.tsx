@@ -1,15 +1,16 @@
 import { Check } from "lucide-react";
 import Container from "../common/Container";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const plans = [
   {
     name: "Free",
     price: "₹0",
-    description: "Perfect for getting started.",
+    description: "Perfect for getting started with AI email.",
     popular: false,
     ctaText: "Get Started",
-    btnClass: "bg-pine-950 text-white hover:bg-forest-700",
+    buttonVariant: "outline" as const,
     features: [
       "Gmail Integration",
       "Calendar Integration",
@@ -20,10 +21,10 @@ const plans = [
   {
     name: "Pro",
     price: "₹299",
-    description: "For professionals and creators.",
+    description: "For professionals and power creators.",
     popular: true,
     ctaText: "Upgrade to Pro",
-    btnClass: "bg-sky-500 text-pine-950 hover:scale-[1.01] hover:shadow-[0_10px_26px_rgba(56,189,248,0.4)]",
+    buttonVariant: "default" as const,
     features: [
       "Unlimited AI Requests",
       "Smart AI Email Reply Drafts",
@@ -35,10 +36,10 @@ const plans = [
   {
     name: "Team",
     price: "Coming Soon",
-    description: "Built for organization groups.",
+    description: "Built for teams and organizations.",
     popular: false,
     ctaText: "Join Waitlist",
-    btnClass: "bg-transparent text-forest-800 border border-line hover:border-forest-600 hover:text-forest-600",
+    buttonVariant: "secondary" as const,
     features: [
       "Team-wide Shared Workspace",
       "Collaborative Calendars",
@@ -50,67 +51,65 @@ const plans = [
 
 export default function Pricing() {
   return (
-    <section className="bg-mist py-[110px] border-b border-line" id="pricing">
+    <section className="bg-slate-50/70 py-20 lg:py-28 border-b border-slate-200" id="pricing">
       <Container>
-        {/* Header */}
+        {/* Section Heading */}
         <div className="flex flex-col items-center text-center mx-auto max-w-3xl mb-16">
-          <span className="font-heading text-[12.5px] font-bold tracking-[0.14em] text-forest-600 uppercase">
+          <span className="text-xs font-bold tracking-widest text-sky-600 uppercase">
             Pricing Plans
           </span>
-          <h2 className="font-heading mt-3 text-[38px] font-bold leading-tight tracking-tight text-ink sm:text-[44px]">
+          <h2 className="font-heading mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-slate-900">
             Simple &amp; transparent pricing
           </h2>
-          <p className="mt-4 text-[16px] text-ink-soft">
+          <p className="mt-4 text-base sm:text-lg text-slate-600 font-medium max-w-2xl">
             Choose the plan that fits your productivity flow.
           </p>
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative flex flex-col justify-between rounded-[20px] p-8 transition-all duration-300 border ${
+              className={`relative flex flex-col justify-between rounded-2xl p-8 transition-all duration-200 border ${
                 plan.popular
-                  ? "bg-pine-950 text-white border-transparent shadow-[0_24px_50px_rgba(8,37,28,0.25)] md:scale-[1.03] z-10"
-                  : "bg-white border-line text-ink"
+                  ? "bg-pine-950 text-white border-transparent shadow-xl md:-translate-y-2"
+                  : "bg-white border-slate-200 text-slate-900 shadow-xs hover:shadow-md"
               }`}
             >
               {/* Popular tag */}
               {plan.popular && (
-                <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-sky-500 text-pine-950 font-heading text-[11.5px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-sky-500 text-slate-950 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
                   Most Popular
-                </span>
+                </div>
               )}
 
-              {/* Card Header & Content */}
-              <div>
-                <h3 className="font-heading text-[20px] font-bold mb-1.5">
+              {/* Card Body */}
+              <div className="flex flex-col flex-1">
+                <h3 className="font-heading text-xl font-bold mb-1">
                   {plan.name}
                 </h3>
-                <p className={`text-[13.5px] leading-relaxed mb-5 ${
-                  plan.popular ? "text-white/60" : "text-ink-soft"
-                }`}>
+                <p className={`text-sm mb-6 ${plan.popular ? "text-white/80" : "text-slate-600"}`}>
                   {plan.description}
                 </p>
 
-                <div className="font-heading text-[38px] font-bold mb-5.5 flex items-baseline">
-                  {plan.price}
+                <div className="flex items-baseline mb-6 border-b border-slate-200/20 pb-6">
+                  <span className="font-heading text-4xl font-extrabold tracking-tight">
+                    {plan.price}
+                  </span>
                   {plan.price !== "Coming Soon" && (
-                    <span className={`text-[14px] font-medium ml-1 ${
-                      plan.popular ? "text-white/60" : "text-ink-soft"
-                    }`}>
+                    <span className={`text-sm font-medium ml-1.5 ${plan.popular ? "text-white/75" : "text-slate-500"}`}>
                       /month
                     </span>
                   )}
                 </div>
 
                 {/* Features List */}
-                <ul className="space-y-3.5 mb-8 border-t border-line/10 pt-5">
+                <ul className="space-y-3.5 mb-8 flex-1">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex gap-2.5 items-start text-[14px]">
-                      <Check className="h-5.5 w-5.5 text-sky-500 shrink-0" />
-                      <span className={plan.popular ? "text-white/85 font-medium" : "text-ink/85 font-medium"}>
+                    <li key={feature} className="flex gap-3 items-start text-sm">
+                      <Check className="h-5 w-5 text-sky-500 shrink-0 mt-0.5" />
+                      <span className={plan.popular ? "text-white/90 font-medium" : "text-slate-700 font-medium"}>
                         {feature}
                       </span>
                     </li>
@@ -118,14 +117,19 @@ export default function Pricing() {
                 </ul>
               </div>
 
-              {/* Action Button */}
-              <div>
-                <Link
-                  href="/login"
-                  className={`inline-flex h-12 w-full items-center justify-center rounded-full text-[14.5px] font-bold transition-all duration-200 cursor-pointer ${plan.btnClass}`}
+              {/* Action Button - aligned at bottom across all cards */}
+              <div className="pt-2">
+                <Button
+                  asChild
+                  variant={plan.buttonVariant}
+                  size="lg"
+                  fullWidth
+                  className={plan.popular ? "font-bold shadow-md hover:bg-sky-400" : "font-semibold"}
                 >
-                  {plan.ctaText}
-                </Link>
+                  <Link href="/login">
+                    {plan.ctaText}
+                  </Link>
+                </Button>
               </div>
             </div>
           ))}

@@ -1,3 +1,5 @@
+import Container from "../common/Container";
+
 export default function Steps() {
   const steps = [
     {
@@ -18,47 +20,50 @@ export default function Steps() {
   ];
 
   return (
-    <section className="bg-white min-h-[calc(100vh-72px)] flex items-center py-16 border-b border-line" id="how-it-works">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 w-full">
-        {/* Heading */}
+    <section className="bg-slate-50/60 py-20 lg:py-28 border-b border-slate-200" id="how-it-works">
+      <Container>
+        {/* Section Heading */}
         <div className="flex flex-col items-center text-center mx-auto max-w-3xl mb-16">
-          <span className="font-heading text-[12.5px] font-bold tracking-[0.14em] text-forest-600 uppercase">
+          <span className="text-xs font-bold tracking-widest text-sky-600 uppercase">
             Getting Started
           </span>
-          <h2 className="font-heading mt-3 text-[38px] font-bold leading-tight tracking-tight text-ink sm:text-[44px]">
+          <h2 className="font-heading mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-slate-900">
             From signup to inbox-zero in three steps
           </h2>
-          <p className="mt-4 text-[16px] text-ink-soft">
+          <p className="mt-4 text-base sm:text-lg text-slate-600 font-medium max-w-2xl">
             No setup calls, no config files — Viscas is ready the moment you connect your account.
           </p>
         </div>
 
         {/* Steps Grid */}
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Dotted Connection Line */}
+          {/* Dotted Connection Line for desktop */}
           <div 
-            className="absolute top-7 left-[16%] right-[16%] h-[1px] hidden md:block"
+            className="absolute top-7 left-[16%] right-[16%] h-[2px] hidden md:block z-0 pointer-events-none"
             style={{
-              background: "repeating-linear-gradient(90deg, var(--line) 0 8px, transparent 8px 16px)",
+              background: "repeating-linear-gradient(90deg, #CBD5E1 0 8px, transparent 8px 16px)",
             }}
           />
 
           {/* Step Cards */}
           {steps.map((step) => (
-            <div key={step.num} className="relative bg-white flex flex-col items-center text-center w-full">
-              <div className="font-mono text-[14px] font-bold text-sky-500 bg-pine-950 w-14 h-14 rounded-full flex items-center justify-center mb-[22px] relative z-10 border-4 border-white shadow-[0_0_0_1px_rgba(10,31,26,0.09)]">
+            <div
+              key={step.num}
+              className="relative bg-white rounded-2xl border border-slate-200 p-8 shadow-xs flex flex-col items-center text-center w-full transition-transform hover:-translate-y-1 hover:shadow-md duration-200 z-10"
+            >
+              <div className="font-mono text-sm font-bold text-sky-600 bg-sky-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-sky-200 shadow-2xs">
                 {step.num}
               </div>
-              <h3 className="font-heading text-[18px] font-bold text-ink mb-2 text-center">
+              <h3 className="font-heading text-lg font-bold text-slate-900 mb-2">
                 {step.title}
               </h3>
-              <p className="text-[14.5px] text-ink-soft leading-relaxed max-w-sm md:max-w-none font-medium text-center">
+              <p className="text-sm text-slate-600 leading-relaxed font-normal">
                 {step.desc}
               </p>
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
