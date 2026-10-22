@@ -1,6 +1,6 @@
 "use client";
 
-import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import { googleLogout } from "@react-oauth/google";
 
 export function logoutGoogle() {
   googleLogout();

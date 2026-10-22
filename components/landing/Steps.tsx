@@ -36,25 +36,26 @@ export default function Steps() {
         </div>
 
         {/* Steps Grid */}
-        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Dotted Connection Line for desktop */}
+        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          {/* Dotted Connection Line for desktop - aligned through badge center (padding 32px + half of 56px badge = 60px) */}
           <div 
-            className="absolute top-7 left-[16%] right-[16%] h-[2px] hidden md:block z-0 pointer-events-none"
+            className="absolute top-[60px] left-[18%] right-[18%] h-[2px] hidden md:block z-0 pointer-events-none"
             style={{
               background: "repeating-linear-gradient(90deg, #CBD5E1 0 8px, transparent 8px 16px)",
             }}
+            aria-hidden="true"
           />
 
           {/* Step Cards */}
           {steps.map((step) => (
             <div
               key={step.num}
-              className="relative bg-white rounded-2xl border border-slate-200 p-8 shadow-xs flex flex-col items-center text-center w-full transition-transform hover:-translate-y-1 hover:shadow-md duration-200 z-10"
+              className="relative bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs flex flex-col items-center text-center w-full h-full transition-all hover:-translate-y-1 hover:shadow-md duration-200 z-10"
             >
-              <div className="font-mono text-sm font-bold text-sky-600 bg-sky-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-sky-200 shadow-2xs">
+              <div className="font-mono text-sm font-bold text-sky-600 bg-sky-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-sky-200 shadow-2xs shrink-0">
                 {step.num}
               </div>
-              <h3 className="font-heading text-lg font-bold text-slate-900 mb-2">
+              <h3 className="font-heading text-lg sm:text-xl font-bold text-slate-900 mb-2.5">
                 {step.title}
               </h3>
               <p className="text-sm text-slate-600 leading-relaxed font-normal">

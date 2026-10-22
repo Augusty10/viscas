@@ -67,19 +67,19 @@ export default function Pricing() {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto pt-2">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative flex flex-col justify-between rounded-2xl p-8 transition-all duration-200 border ${
+              className={`relative flex flex-col justify-between rounded-2xl p-6 sm:p-8 transition-all duration-200 border ${
                 plan.popular
-                  ? "bg-pine-950 text-white border-transparent shadow-xl md:-translate-y-2"
+                  ? "bg-pine-950 text-white border-transparent shadow-xl ring-2 ring-sky-400/40 md:-translate-y-2"
                   : "bg-white border-slate-200 text-slate-900 shadow-xs hover:shadow-md"
               }`}
             >
               {/* Popular tag */}
               {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-sky-500 text-slate-950 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-sky-400 text-pine-950 text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm z-10 whitespace-nowrap">
                   Most Popular
                 </div>
               )}
@@ -93,8 +93,12 @@ export default function Pricing() {
                   {plan.description}
                 </p>
 
-                <div className="flex items-baseline mb-6 border-b border-slate-200/20 pb-6">
-                  <span className="font-heading text-4xl font-extrabold tracking-tight">
+                <div className={`flex items-baseline mb-6 pb-6 min-h-[56px] border-b ${
+                  plan.popular ? "border-white/15" : "border-slate-200"
+                }`}>
+                  <span className={`font-heading font-extrabold tracking-tight ${
+                    plan.price === "Coming Soon" ? "text-2xl sm:text-3xl" : "text-4xl"
+                  }`}>
                     {plan.price}
                   </span>
                   {plan.price !== "Coming Soon" && (
@@ -108,7 +112,7 @@ export default function Pricing() {
                 <ul className="space-y-3.5 mb-8 flex-1">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex gap-3 items-start text-sm">
-                      <Check className="h-5 w-5 text-sky-500 shrink-0 mt-0.5" />
+                      <Check className="h-5 w-5 text-sky-400 shrink-0 mt-0.5" />
                       <span className={plan.popular ? "text-white/90 font-medium" : "text-slate-700 font-medium"}>
                         {feature}
                       </span>
@@ -124,7 +128,7 @@ export default function Pricing() {
                   variant={plan.buttonVariant}
                   size="lg"
                   fullWidth
-                  className={plan.popular ? "font-bold shadow-md hover:bg-sky-400" : "font-semibold"}
+                  className={plan.popular ? "font-bold shadow-md bg-sky-500 hover:bg-sky-400 text-pine-950" : "font-semibold"}
                 >
                   <Link href="/login">
                     {plan.ctaText}

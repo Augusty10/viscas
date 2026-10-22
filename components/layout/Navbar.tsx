@@ -11,10 +11,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", href: "/#" },
-    { name: "Features", href: "/#features" },
-    { name: "Pricing", href: "/#pricing" },
-    { name: "FAQ", href: "/#faq" },
+    { name: "Features", href: "#features" },
+    { name: "How it Works", href: "#how-it-works" },
+    { name: "Pricing", href: "#pricing" },
+    { name: "FAQ", href: "#faq" },
   ];
 
   // Close mobile drawer on Escape key and prevent background scroll
@@ -36,14 +36,14 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-pine-950/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl h-18 items-center justify-between px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl h-16 sm:h-[72px] items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="transition-opacity hover:opacity-90">
           <Logo />
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-7 lg:gap-8 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -56,10 +56,10 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop Actions */}
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="hidden items-center gap-3.5 md:flex">
           <Link
             href="/login"
-            className="text-sm font-medium text-white/85 transition-colors hover:text-white px-3 py-2"
+            className="text-sm font-medium text-white/85 transition-colors hover:text-white px-3 py-2 rounded-lg hover:bg-white/5"
           >
             Login
           </Link>

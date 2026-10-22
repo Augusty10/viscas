@@ -67,17 +67,17 @@ export default function Features() {
             return (
               <Card
                 key={feat.title}
-                className="group border border-slate-200 bg-white p-7 transition-all duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-lg"
+                className="group flex flex-col h-full rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-50 text-sky-600 border border-sky-100 mb-5 transition-colors duration-200 group-hover:bg-sky-600 group-hover:text-white group-hover:border-transparent">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-50 text-sky-600 border border-sky-100 mb-5 transition-colors duration-200 group-hover:bg-sky-600 group-hover:text-white group-hover:border-transparent shrink-0">
                   <Icon className="h-6 w-6" />
                 </div>
 
-                <h3 className="font-heading text-lg font-bold text-slate-900 mb-2">
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-slate-900 mb-2">
                   {feat.title}
                 </h3>
 
-                <p className="text-sm text-slate-600 leading-relaxed font-normal">
+                <p className="text-sm text-slate-600 leading-relaxed font-normal flex-1">
                   {feat.description}
                 </p>
               </Card>

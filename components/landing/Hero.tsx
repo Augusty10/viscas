@@ -63,28 +63,28 @@ export default function Hero() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-16">
           {/* Left Column: Headline and Actions */}
-          <div className="flex flex-col items-start text-left max-w-2xl w-full">
+          <div className="flex flex-col items-start text-left w-full max-w-xl lg:max-w-none">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/10 px-3.5 py-1.5 text-xs font-semibold text-sky-300 mb-6 backdrop-blur-xs">
+            <div className="inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/10 px-3.5 py-1.5 text-xs font-semibold text-sky-300 mb-5 sm:mb-6 backdrop-blur-xs">
               <span className="h-2 w-2 rounded-full bg-sky-400 animate-pulse" />
               AI-Powered Workspace
             </div>
 
             {/* Headline */}
-            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] mb-5">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[52px] xl:text-6xl font-extrabold tracking-tight text-white leading-[1.12] mb-5">
               Your AI workspace for{" "}
               <span className="text-sky-400">email &amp; calendar</span>
             </h1>
 
-            {/* Description - WCAG AA compliant text-white/85 */}
-            <p className="text-base sm:text-lg text-white/85 leading-relaxed mb-8 max-w-xl font-normal">
+            {/* Description */}
+            <p className="text-base sm:text-lg text-white/80 leading-relaxed mb-7 sm:mb-8 max-w-lg font-normal">
               Viscas brings Gmail, Google Calendar, and an AI co-pilot into one calm dashboard — so your inbox stops running your day.
             </p>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-3.5 w-full sm:w-auto mb-8">
+            <div className="flex flex-col sm:flex-row gap-3.5 w-full sm:w-auto mb-7 sm:mb-8">
               <Button asChild size="lg" variant="default" className="w-full sm:w-auto font-bold shadow-md">
                 <Link href="/login">Get Started Free</Link>
               </Button>
@@ -101,49 +101,49 @@ export default function Hero() {
               </Button>
             </div>
 
-            {/* Trust Line - High contrast WCAG AA compliant text */}
-            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-white/80">
+            {/* Trust Line */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-medium text-white/80">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-sky-400" />
+                <CheckCircle2 className="h-4 w-4 text-sky-400 shrink-0" />
                 Free plan available
               </span>
-              <span className="h-3.5 w-px bg-white/20" />
+              <span className="h-3.5 w-px bg-white/20 hidden sm:inline-block" />
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-sky-400" />
+                <CheckCircle2 className="h-4 w-4 text-sky-400 shrink-0" />
                 No credit card required
               </span>
             </div>
           </div>
 
           {/* Right Column: Interactive Dashboard Mockup Preview */}
-          <div className="relative w-full max-w-full mx-auto lg:max-w-none">
+          <div className="relative w-full max-w-full mx-auto lg:max-w-none pt-2 sm:pt-0">
             {/* AI Drafting Floating Chip */}
-            <div className="absolute -top-3.5 right-2 sm:right-6 z-20 animate-float-chip inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 sm:px-3.5 sm:py-1.5 text-xs font-bold text-slate-800 shadow-md">
-              <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse-dot" />
+            <div className="absolute -top-3.5 right-3 sm:right-6 z-20 animate-float-chip inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 sm:px-3.5 sm:py-1.5 text-xs font-bold text-slate-800 shadow-md">
+              <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse-dot shrink-0" />
               AI drafting a reply…
             </div>
 
             {/* Dashboard Mock Window */}
             <div className="overflow-hidden rounded-2xl bg-white shadow-2xl border border-slate-200 text-left w-full">
               {/* Window Chrome Header */}
-              <div className="flex items-center gap-2 bg-slate-100 px-4 py-3 border-b border-slate-200">
-                <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
-                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                <div className="ml-2.5 flex-1 bg-white border border-slate-200 rounded-md px-3 py-1 text-xs text-slate-600 font-mono select-none overflow-hidden text-ellipsis whitespace-nowrap">
+              <div className="flex items-center gap-2 bg-slate-100 px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-slate-200">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-400 shrink-0" />
+                <span className="h-2.5 w-2.5 rounded-full bg-amber-400 shrink-0" />
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shrink-0" />
+                <div className="ml-2 flex-1 bg-white border border-slate-200 rounded-md px-2.5 py-1 text-[11px] sm:text-xs text-slate-600 font-mono select-none overflow-hidden text-ellipsis whitespace-nowrap">
                   viscas.com/dashboard
                 </div>
               </div>
 
               {/* Dashboard Inner Body */}
-              <div className="p-4 sm:p-5 text-slate-900 bg-slate-50/60">
+              <div className="p-3.5 sm:p-5 text-slate-900 bg-slate-50/60">
                 {/* Greeting banner */}
-                <div className="rounded-xl p-3.5 sm:p-4 mb-4 text-white bg-gradient-to-r from-forest-700 to-sky-600 shadow-xs">
+                <div className="rounded-xl p-3 sm:p-4 mb-3.5 sm:mb-4 text-white bg-gradient-to-r from-forest-700 to-sky-600 shadow-xs">
                   <div className="text-[10px] font-bold tracking-widest uppercase text-sky-200 mb-0.5">
                     AI Productivity Workspace
                   </div>
-                  <h3 className="font-heading text-base sm:text-lg font-bold">Good afternoon, Dhanraj 👋</h3>
-                  <p className="text-xs text-white/85">Thursday, July 16 — here&apos;s your overview.</p>
+                  <h3 className="font-heading text-sm sm:text-base font-bold">Good afternoon, Dhanraj 👋</h3>
+                  <p className="text-[11px] sm:text-xs text-white/85">Thursday, July 16 — here&apos;s your overview.</p>
                 </div>
 
                 {/* Statistics Cards */}
