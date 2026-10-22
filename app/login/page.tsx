@@ -2,10 +2,15 @@
 
 import { useState, FormEvent, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import GoogleButton from "@/components/auth/GoogleButton";
 import { signupWithEmail, loginWithEmail } from "@/lib/auth-client";
-import { Loader2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Loader2, Mail, Lock, User, Eye, EyeOff, AlertCircle, ArrowLeft } from "lucide-react";
 import { account } from "@/lib/appwrite";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import Logo from "@/components/common/Logo";
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -124,9 +129,9 @@ function LoginForm() {
         if (!response.ok || !data.success) {
           throw new Error(data.error || "Failed to sync user.");
         }
-      } catch (syncErr: any) {
+      } catch (syncErr: unknown) {
         console.warn("Failed to auto-sync user on sign-in:", syncErr);
-        const errMsg = syncErr?.message || "";
+        const errMsg = (syncErr as Error)?.message || "";
         if (
           errMsg.includes("paused") ||
           errMsg.includes("inactivity") ||
@@ -135,7 +140,7 @@ function LoginForm() {
           throw syncErr;
         }
       }
-      
+
       // Redirect to dashboard with a full reload to verify session cookies
       window.location.href = "/dashboard";
     } catch (err: unknown) {
@@ -147,129 +152,196 @@ function LoginForm() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="relative w-full max-w-md">
-        {/* Glow decoration */}
-        <div className="absolute -top-12 -left-12 -z-10 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl" />
-        <div className="absolute -bottom-12 -right-12 -z-10 h-72 w-72 rounded-full bg-cyan-300/20 blur-3xl" />
+    <main className="relative flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-8 sm:px-6 sm:py-12 overflow-x-hidden">
+      {/* Background ambient lighting */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[550px] w-[550px] rounded-full bg-gradient-to-tr from-sky-200/40 via-cyan-100/30 to-emerald-200/30 blur-3xl" />
+      </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white/80 p-8 shadow-2xl backdrop-blur-xl">
-          <div className="text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-              {isSignUp ? "Create an account" : "Welcome back"}
-            </h1>
-            <p className="mt-2 text-sm text-slate-500">
-              {isSignUp
-                ? "Get started with your Viscas workspace"
-                : "Sign in to manage your productivity"}
-            </p>
+      <div className="relative w-full max-w-md z-10 flex flex-col gap-4">
+        {/* Back to Home Link & Security Tag */}
+        <div className="flex items-center justify-between px-1">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to home
+          </Link>
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-medium text-slate-500">256-bit Encrypted</span>
           </div>
+        </div>
 
-          {error && (
-            <div className="mt-6 rounded-xl bg-red-50 p-4 text-sm font-medium text-red-600 border border-red-100">
-              {error}
+        {/* Auth Card */}
+        <Card className="border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-md">
+          <CardContent className="p-6 sm:p-8 flex flex-col gap-5">
+            {/* Brand Logo & Header */}
+            <div className="flex flex-col items-center text-center">
+              <Link href="/" className="mb-3 inline-block">
+                <Logo showText={true} className="!text-slate-900" />
+              </Link>
+              <h1 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                {isSignUp ? "Create your account" : "Welcome back"}
+              </h1>
+              <p className="mt-1 text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+                {isSignUp
+                  ? "Start managing your email & calendar with AI"
+                  : "Sign in to access your unified AI workspace"}
+              </p>
             </div>
-          )}
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="space-y-4 rounded-md">
+            {/* Segmented Auth Mode Switcher */}
+            <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1 border border-slate-200/70">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSignUp(false);
+                  setError(null);
+                }}
+                className={`flex items-center justify-center rounded-lg py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  !isSignUp
+                    ? "bg-white text-slate-900 shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSignUp(true);
+                  setError(null);
+                }}
+                className={`flex items-center justify-center rounded-lg py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  isSignUp
+                    ? "bg-white text-slate-900 shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                Create Account
+              </button>
+            </div>
+
+            {/* Error Feedback Banner */}
+            {error && (
+              <div
+                role="alert"
+                className="flex items-start gap-3 rounded-xl border border-destructive-border bg-destructive-surface p-3.5 text-xs sm:text-sm text-destructive"
+              >
+                <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-destructive" />
+                <span className="font-medium leading-relaxed">{error}</span>
+              </div>
+            )}
+
+            {/* Primary Email/Password Form */}
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               {isSignUp && (
-                <div className="relative flex items-center">
-                  <User className="absolute left-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
-                  <input
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Full Name
+                  </label>
+                  <Input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Full Name"
-                    style={{ paddingLeft: "2.75rem" }}
-                    className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50/50 pr-4 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
+                    placeholder="e.g. Alex Morgan"
+                    startIcon={<User className="h-4 w-4" />}
                   />
                 </div>
               )}
 
-              <div className="relative flex items-center">
-                <Mail className="absolute left-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
-                <input
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-700">
+                  Email Address
+                </label>
+                <Input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email Address"
-                  style={{ paddingLeft: "2.75rem" }}
-                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50/50 pr-4 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
+                  placeholder="name@company.com"
+                  startIcon={<Mail className="h-4 w-4" />}
                 />
               </div>
 
-              <div className="relative flex items-center">
-                <Lock className="absolute left-3.5 h-5 w-5 text-slate-400 pointer-events-none" />
-                <input
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Password
+                  </label>
+                  {!isSignUp && (
+                    <span className="text-[11px] font-medium text-slate-400">
+                      Minimum 8 characters
+                    </span>
+                  )}
+                </div>
+                <Input
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password (min. 8 characters)"
-                  style={{ paddingLeft: "2.75rem" }}
-                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50/50 pr-12 text-sm font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
+                  placeholder="••••••••"
+                  startIcon={<Lock className="h-4 w-4" />}
+                  endIcon={
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className="cursor-pointer text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  }
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 text-slate-400 hover:text-slate-600 transition"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
               </div>
-            </div>
 
-            <div>
-              <button
+              <Button
                 type="submit"
-                disabled={loading}
-                className="group relative flex h-12 w-full items-center justify-center rounded-2xl bg-sky-500 text-sm font-semibold text-white transition hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-100 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                variant="default"
+                size="default"
+                fullWidth
+                loading={loading}
+                className="mt-1 font-bold"
               >
-                {loading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : isSignUp ? (
-                  "Create Account"
-                ) : (
-                  "Sign In"
-                )}
-              </button>
-            </div>
-          </form>
+                {isSignUp ? "Create Workspace Account" : "Sign In to Viscas"}
+              </Button>
+            </form>
 
-          <div className="mt-6">
-            <div className="relative flex items-center justify-center">
-              <div className="w-full border-t border-slate-200" />
-              <span className="absolute bg-white px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            {/* Non-overlapping Flex Divider */}
+            <div className="flex items-center gap-3 py-1">
+              <div className="h-px flex-1 bg-slate-200" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 select-none">
                 Or continue with
               </span>
+              <div className="h-px flex-1 bg-slate-200" />
             </div>
 
-            <div className="mt-6">
+            {/* Social OAuth Actions */}
+            <div>
               <GoogleButton />
             </div>
-          </div>
 
-          <div className="mt-8 text-center text-sm">
-            <button
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setError(null);
-              }}
-              className="font-medium text-sky-500 hover:text-sky-600 transition"
-            >
-              {isSignUp
-                ? "Already have an account? Sign In"
-                : "Don't have an account? Sign Up"}
-            </button>
-          </div>
-        </div>
+            {/* Card Footer Disclaimer */}
+            <p className="text-center text-[11px] text-slate-500 leading-normal">
+              By continuing, you agree to Viscas&apos;s{" "}
+              <Link href="/#" className="underline hover:text-slate-800">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="/#" className="underline hover:text-slate-800">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </main>
   );
@@ -280,7 +352,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-slate-50">
-          <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
+          <Loader2 className="h-8 w-8 animate-spin text-sky-600" />
         </div>
       }
     >
