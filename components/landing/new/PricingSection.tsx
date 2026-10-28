@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import LandingSection from "./LandingSection";
 import LandingCard from "./LandingCard";
 import LandingButton from "./LandingButton";

@@ -2,7 +2,7 @@ import React from "react";
 import { LANDING_CONTENT, StepItem } from "@/lib/landing-data";
 import LandingSection from "./LandingSection";
 import LandingCard from "./LandingCard";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 export default function HowItWorks() {
   const { badge, title, subtitle, steps } = LANDING_CONTENT.howItWorks;

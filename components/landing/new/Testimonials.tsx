@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { LANDING_CONTENT, TestimonialItem } from "@/lib/landing-data";
 import LandingSection from "./LandingSection";
-import LandingCard from "./LandingCard";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 
 export default function Testimonials() {

@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { LANDING_CONTENT } from "@/lib/landing-data";
 import LandingButton from "./LandingButton";
 import {
@@ -11,7 +10,6 @@ import {
   Mail,
   Clock,
   Send,
-  Zap,
 } from "lucide-react";
 
 export default function Hero() {

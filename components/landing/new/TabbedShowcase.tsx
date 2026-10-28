@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { LANDING_CONTENT, TabFeature } from "@/lib/landing-data";
 import LandingSection from "./LandingSection";
-import LandingCard from "./LandingCard";
 import {
   Inbox,
   Calendar,
@@ -13,7 +12,6 @@ import {
   Sparkles,
   ArrowRight,
   Clock,
-  ShieldCheck,
   TrendingDown,
 } from "lucide-react";
 import Link from "next/link";

@@ -9,10 +9,6 @@ import {
   ChevronDown,
   Menu,
   X,
-  Sparkles,
-  Calendar,
-  Mail,
-  Shield,
   ArrowRight,
 } from "lucide-react";
 

@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { LANDING_CONTENT, SplitSectionItem } from "@/lib/landing-data";
 import LandingButton from "./LandingButton";
 import {
@@ -12,7 +11,6 @@ import {
   Layers,
   Calendar,
   Mail,
-  Sliders,
   Send,
 } from "lucide-react";
 
