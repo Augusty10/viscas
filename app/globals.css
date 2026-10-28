@@ -19,6 +19,26 @@
   --sky-100: #E0F2FE;
   --sky-050: #F0F9FF;
 
+  /* Fintech Design System Tokens (PayPal-inspired) */
+  --fintech-navy: #0B1F4B;
+  --fintech-navy-dark: #071533;
+  --fintech-navy-light: #122B68;
+  --fintech-blue: #0070E0;
+  --fintech-blue-hover: #0058B6;
+  --fintech-blue-active: #004593;
+  --fintech-blue-subtle: #EBF4FE;
+  --fintech-blue-border: #BAD8FB;
+  --fintech-bg-light: #F5F7FA;
+  --fintech-bg-subtle: #F8FAFD;
+  --fintech-text-heading: #0B1F4B;
+  --fintech-text-body: #4A5568;
+  --fintech-text-muted: #64748B;
+  --fintech-border: #E2E8F0;
+  --fintech-shadow-sm: 0 2px 8px rgba(11, 31, 75, 0.04);
+  --fintech-shadow-md: 0 8px 24px -4px rgba(11, 31, 75, 0.08);
+  --fintech-shadow-lg: 0 16px 40px -8px rgba(11, 31, 75, 0.12);
+  --fintech-shadow-floating: 0 20px 48px -10px rgba(11, 31, 75, 0.14), 0 8px 16px -4px rgba(11, 31, 75, 0.06);
+
   /* Neutrals & Surfaces (High contrast WCAG AA compliant >= 4.5:1) */
   --background: #F8FAFC;
   --foreground: #091310;
@@ -99,8 +119,8 @@
   --text-muted: #64748B;
 
   /* Fonts */
-  --font-heading: var(--font-space-grotesk);
-  --font-body: var(--font-inter);
+  --font-heading: var(--font-plus-jakarta), var(--font-space-grotesk), system-ui, sans-serif;
+  --font-body: var(--font-plus-jakarta), var(--font-inter), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono);
 }
 
@@ -279,4 +299,59 @@ body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fintech Card & Motion Utilities */
+.fintech-card {
+  background: #ffffff;
+  border: 1px solid var(--fintech-border);
+  border-radius: 1.25rem;
+  box-shadow: var(--fintech-shadow-sm);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.fintech-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--fintech-shadow-md);
+  border-color: #cbd5e1;
+}
+
+.fintech-pill-btn {
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fintech-pill-btn:hover {
+  transform: translateY(-1px);
+}
+
+.fintech-pill-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes fintechFloatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-fintech-float {
+  animation: fintechFloatSlow 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .fintech-card:hover,
+  .fintech-pill-btn:hover {
+    transform: none !important;
+  }
 }
